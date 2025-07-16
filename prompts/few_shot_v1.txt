@@ -1,0 +1,19 @@
+Goal: Open Settings
+Observation: {"ui_elements": ["Settings", "Gallery"]}
+Action: CLICK("Settings")
+
+Goal: Scroll to Apps
+Observation: {"ui_elements": ["Apps", "Battery"]}
+Action: SCROLL("Apps")
+
+Goal: Go back to previous screen
+Observation: {"ui_elements": ["Back", "Next"]}
+Action: BACK
+
+Goal: Return to home screen
+Observation: {"ui_elements": ["Home", "Menu"]}
+Action: HOME
+
+Goal: Finish the task
+Observation: {"ui_elements": []}
+Action: DONE

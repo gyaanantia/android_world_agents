@@ -11,8 +11,8 @@
 android_llm_agent/
 ├── prompts/               # external‑text prompt files
 │   ├── base_prompt.txt
-│   ├── few_shot_v1.md
-│   └── reflective_v1.md
+│   ├── few_shot_v1.txt
+│   └── reflective_v1.txt
 ├── results/               # JSONL logs written by each run
 ├── src/
 │   ├── __init__.py
@@ -57,8 +57,8 @@ Each episode JSON exchanged with `run_episode.py` **must** match:
 | ID             | Prompt Strategy                                                                 | Extra Cost | Recommended File           |
 | -------------- | ------------------------------------------------------------------------------- | ---------- | -------------------------- |
 | **base**       | Last observation only                                                           | ‑          | `prompts/base_prompt.txt`  |
-| **few‑shot**   | Adds 1‑2 exemplars for each task family                                         | +20‑30 %   | `prompts/few_shot_v1.md`   |
-| **reflective** | Model *explains* choice before returning JSON (`chain‑of‑thought` but stripped) | +35‑50 %   | `prompts/reflective_v1.md` |
+| **few‑shot**   | Adds 1‑2 exemplars for each task family                                         | +20‑30 %   | `prompts/few_shot_v1.txt`   |
+| **reflective** | Model *explains* choice before returning JSON (`chain‑of‑thought` but stripped) | +35‑50 %   | `prompts/reflective_v1.txt` |
 
 All three share the **function‑calling** schema below.
 
