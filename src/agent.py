@@ -1,10 +1,9 @@
 import os
 import openai
 from typing import Dict, List
+from .prompts import BASE_PROMPT, FEW_SHOT_EXAMPLES, REFLECTIVE_PROMPT
 
 openai.api_key = os.getenv("OPENAI_API_KEY")
-
-from .prompts import BASE_PROMPT, FEW_SHOT_EXAMPLES, REFLECTIVE_PROMPT
 
 
 VARIANT_PROMPTS = {

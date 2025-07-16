@@ -1,0 +1,1 @@
+Consider the goal and the current screen carefully. In one sentence, explain why you choose the next action, then return only the function call.

@@ -11,5 +11,5 @@ def _read(name: str) -> str:
 
 
 BASE_PROMPT = _read("base_prompt.txt")
-FEW_SHOT_EXAMPLES = _read("few_shot_v1.md")
-REFLECTIVE_PROMPT = _read("reflective_v1.md")
+FEW_SHOT_EXAMPLES = _read("few_shot_v1.txt")
+REFLECTIVE_PROMPT = _read("reflective_v1.txt")
