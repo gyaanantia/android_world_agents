@@ -1,25 +1,31 @@
-# 📑 CONTEXT
+# CONTEXT
 You are an elite software engineer tasked with scaffolding a research prototype called
 “android_llm_agent”. The goal is to evaluate how well a large‑language‑model (LLM)
 can autonomously choose state–action pairs inside the **android_world** benchmark
 (episodes come as JSON with goal, observations, ground‑truth action trace).
 
-# 🗂️ OUTPUT FORMAT
+# OUTPUT FORMAT
 Respond with **ONLY** a sequence of file blocks.
 Each block starts with:
+
 === <relative/path/filename> ===
+
 and ends with:
+
 === end ===
+
 Put the file’s full contents in between.
 No explanations or extra chat.
 
 Example:
+
 === README.md ===
-# Title
-bla bla
+
+\<file contents\>
+  
 === end ===
 
-# 📁 REQUIRED TREE & CONTENT
+# REQUIRED TREE & CONTENT
 (1) README.md  
  • One‑sentence project purpose.  
  • Quickstart (venv, `pip install -r requirements.txt`, run a sample episode).  
@@ -53,17 +59,17 @@ bla bla
  A natural‑language template explaining action syntax; enforces JSON output.  
 (10) .gitignore covering venv, __pycache__, *.log, *.jsonl under results/.
 
-# 🧪 OPTIONAL (nice‑to‑have, include if space)
+# OPTIONAL (nice‑to‑have, include if space)
 • tests/test_evaluator.py with one happy‑path unit test.  
 • pyproject.toml setting `[tool.black] line-length = 100`.
 
-# 📝 STYLE GUIDELINES
+# STYLE GUIDELINES
 • Python 3.11+.  
 • Fully typed with `from __future__ import annotations`.  
 • Top‑level functions have Google‑style docstrings.  
 • Keep each file ≤ 120 LoC.  
 • Use `if __name__ == "__main__":` guards for CLIs.
 
-# 🚀 GO
+# GO
 Generate every file block specified above **in order**. Remember: output the blocks,
 nothing else.
