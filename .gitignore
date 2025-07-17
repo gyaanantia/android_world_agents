@@ -48,6 +48,7 @@ ehthumbs.db
 Thumbs.db
 
 # Project specific
+android_world/
 episode_*.json
 *.log
 

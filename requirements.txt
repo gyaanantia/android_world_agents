@@ -1,0 +1,32 @@
+# AndroidWorld Enhanced T3A Agent Requirements
+# Note: AndroidWorld should be installed first using the setup script: ./setup.sh
+# or manually via: pip install -e android_world/
+
+# Core LLM API dependencies
+openai>=1.0.0
+anthropic>=0.3.0
+
+# Data analysis and visualization
+numpy>=1.24.0
+pandas>=1.5.0
+matplotlib>=3.6.0
+seaborn>=0.12.0
+plotly>=5.0.0
+
+# Image processing
+pillow>=9.0.0
+opencv-python
+
+# Utilities
+tqdm>=4.64.0
+python-dateutil>=2.8.0
+
+# Development and testing
+pytest
+jupyter>=1.0.0
+
+# Note: AndroidWorld's own dependencies are installed automatically
+# by the setup script and include:
+# - absl-py, android-env, fastapi, fuzzywuzzy, google-generativeai
+# - grpcio-tools, immutabledict, ipython, jsonschema, pydub
+# - python-levenshtein, requests, tenacity, termcolor, uvicorn
