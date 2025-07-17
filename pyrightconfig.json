@@ -1,0 +1,14 @@
+{
+    "include": [
+        "src",
+        "android_world/android_world"
+    ],
+    "extraPaths": [
+        "android_world",
+        "src"
+    ],
+    "pythonVersion": "3.11",
+    "typeCheckingMode": "off",
+    "reportMissingImports": "none",
+    "reportMissingTypeStubs": "none"
+}

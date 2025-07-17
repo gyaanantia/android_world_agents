@@ -52,6 +52,7 @@ This will:
 - Install it in editable mode
 - Create all necessary `__init__.py` files for proper module imports
 - Install all required dependencies
+- Install the enhanced agents package
 
 ### Option 2: Manual Setup
 
@@ -68,9 +69,9 @@ This will:
    pip install -e android_world/
    ```
 
-3. **Install additional requirements**:
+3. **Install the enhanced agents package**:
    ```bash
-   pip install -r requirements.txt
+   pip install -e .
    ```
 
 ### LLM API Setup

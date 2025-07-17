@@ -77,35 +77,16 @@ create_init_files "android_world"
 echo "Installing Android World in editable mode..."
 pip install -e android_world/
 
-# Install other requirements
-echo "Installing additional requirements..."
-pip install \
-    absl-py \
-    android-env \
-    fastapi \
-    fuzzywuzzy \
-    google-generativeai \
-    grpcio-tools \
-    immutabledict \
-    ipython \
-    jsonschema \
-    matplotlib \
-    numpy \
-    opencv-python \
-    pandas \
-    pydub \
-    pytest \
-    python-levenshtein \
-    requests \
-    tenacity \
-    termcolor \
-    uvicorn
+# Install this project and its dependencies
+echo "Installing Android World Agents package..."
+pip install -e .
 
 echo ""
 echo "✅ Environment setup complete!"
 echo ""
 echo "The environment includes:"
 echo "  - Android World (editable install from GitHub)"
+echo "  - Android World Agents (enhanced T3A with prompting capabilities)"
 echo "  - All necessary __init__.py files"
 echo "  - All required dependencies"
 echo ""
@@ -115,3 +96,4 @@ echo ""
 echo "To test the installation, run:"
 echo "  python -c \"import android_world; print('Android World installed successfully')\""
 echo "  python -c \"import android_world.agents; print('Android World agents module available')\""
+echo "  python -c \"from src.agent import EnhancedT3A; print('Enhanced T3A agent available')\""

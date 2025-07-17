@@ -1,6 +1,14 @@
 """Enhanced T3A agent with few-shot and self-reflection capabilities."""
 
 import os
+import sys
+from pathlib import Path
+
+# Add android_world to Python path
+android_world_path = Path(__file__).parent.parent / "android_world"
+if android_world_path.exists() and str(android_world_path) not in sys.path:
+    sys.path.insert(0, str(android_world_path))
+
 import openai
 from typing import Dict, List, Optional
 
@@ -9,7 +17,14 @@ from android_world.agents import infer
 from android_world.agents import base_agent
 from android_world.env import interface
 
-from prompts import get_prompt_template, format_prompt
+# Import prompts module
+try:
+    from .prompts import get_prompt_template, format_prompt
+except ImportError:
+    # Fallback for direct execution
+    import prompts
+    get_prompt_template = prompts.get_prompt_template
+    format_prompt = prompts.format_prompt
 
 # Initialize OpenAI client
 openai_client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
