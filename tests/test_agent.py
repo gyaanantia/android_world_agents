@@ -5,7 +5,11 @@ Quick test to verify that the enhanced agent works properly.
 
 import sys
 import os
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'src'))
+from pathlib import Path
+
+# Add the src directory to path
+project_root = Path(__file__).parent.parent
+sys.path.insert(0, str(project_root / "src"))
 
 def test_agent_import():
     """Test that the enhanced agent can be imported and basic functionality works."""
@@ -21,7 +25,12 @@ def test_agent_import():
         print(f"✅ Base prompt loaded ({len(base_prompt)} characters)")
         
         # Test prompt formatting
-        formatted = format_prompt(base_prompt, goal="Test", ui_elements="Test UI")
+        formatted = format_prompt(
+            base_prompt, 
+            goal="Test", 
+            ui_elements="Test UI",
+            history="You just started, no action has been performed yet."
+        )
         print("✅ Prompt formatting works")
         
         print("\n🎉 All agent functionality tests passed!")

@@ -122,9 +122,6 @@ python run_evaluation.py \
   --results_dir "my_results" \
   --save_screenshots \
   --log_level "DEBUG"
-  --results_dir "my_results" \
-  --save_screenshots \
-  --log_level "DEBUG"
 ```
 
 ### Available Options
@@ -156,11 +153,17 @@ android_world_agents/
 │   └── utils.py          # AndroidWorld integration utilities
 ├── prompts/
 │   ├── base_prompt.txt   # Base prompting template
-│   ├── few_shot_v1.md    # Few-shot prompting examples
-│   └── reflective_v1.md  # Self-reflection prompting template
+│   ├── few_shot_v1.txt   # Few-shot prompting examples
+│   └── reflective_v1.txt # Self-reflection prompting template
+├── tests/                # Test suite
+│   ├── test_agent.py     # Agent functionality tests
+│   ├── test_evaluator.py # Evaluator tests
+│   ├── test_imports.py   # Import verification tests
+│   └── test_prompts.py   # Prompt system tests
 ├── results/              # Evaluation results (auto-created)
-├── requirements.txt      # Python dependencies
+├── run_tests.py          # Test runner script
 ├── run_evaluation.py     # Main launcher script
+├── verify_framework.py   # Framework verification script
 └── README.md            # This file
 ```
 
@@ -329,7 +332,14 @@ python run_evaluation.py --task "my_task" --log_level "DEBUG"
 ### Running Tests
 
 ```bash
-python -m pytest tests/
+# Run all tests
+python run_tests.py
+
+# Or run individual tests
+python tests/test_imports.py
+python tests/test_prompts.py
+python tests/test_agent.py
+python tests/test_evaluator.py
 ```
 
 ### Code Style

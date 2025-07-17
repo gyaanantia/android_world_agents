@@ -5,7 +5,11 @@ Verifies all prompt variants work correctly.
 """
 import sys
 import os
-sys.path.append(os.path.join(os.path.dirname(__file__), 'src'))
+from pathlib import Path
+
+# Add the src directory to path
+project_root = Path(__file__).parent.parent
+sys.path.insert(0, str(project_root / "src"))
 
 from prompts import get_prompt_template, format_prompt, list_available_prompts
 

@@ -47,9 +47,9 @@ def test_file_structure():
         'src/run_episode.py',
         'src/utils.py',
         'prompts/base_prompt.txt',
-        'prompts/few_shot_v1.md',
-        'prompts/reflective_v1.md',
-        'requirements.txt',
+        'prompts/few_shot_v1.txt',
+        'prompts/reflective_v1.txt',
+        'pyproject.toml',
         'run_evaluation.py',
         'README.md'
     ]
@@ -96,8 +96,11 @@ def test_prompt_functionality():
         # Test prompt formatting
         try:
             base_prompt = get_prompt_template("base")
-            formatted = format_prompt(base_prompt, goal="Test goal", ui_elements="Test UI")
-            if "{goal}" in formatted or "{ui_elements}" in formatted:
+            formatted = format_prompt(base_prompt, 
+                                    goal="Test goal", 
+                                    ui_elements="Test UI", 
+                                    history="Test history")
+            if "{goal}" in formatted or "{ui_elements}" in formatted or "{history}" in formatted:
                 print("❌ Prompt formatting failed - variables not substituted")
                 return False
             print("✅ Prompt formatting works correctly")
@@ -116,14 +119,12 @@ def test_dependencies():
     """Test if dependencies are available."""
     print("\n📦 Testing dependencies...")
     
-    # Read requirements
-    try:
-        with open('requirements.txt', 'r') as f:
-            requirements = f.read().strip().split('\n')
-        requirements = [req.strip() for req in requirements if req.strip() and not req.startswith('#')]
-    except FileNotFoundError:
-        print("❌ requirements.txt not found")
+    # Check if pyproject.toml exists
+    if not os.path.exists('pyproject.toml'):
+        print("❌ pyproject.toml not found")
         return False
+    
+    print("✅ pyproject.toml found")
     
     # Test basic imports (skip AndroidWorld for now)
     basic_deps = ['json', 'os', 'sys', 'datetime', 'pathlib', 'typing', 'logging']
