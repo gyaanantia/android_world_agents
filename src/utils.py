@@ -7,25 +7,19 @@ import logging
 
 
 def find_adb_directory() -> Optional[str]:
-    """Find ADB directory for AndroidWorld."""
-    # Check common locations
-    common_paths = [
-        "~/Android/Sdk/platform-tools",
-        "~/Library/Android/sdk/platform-tools",
-        "/usr/local/bin",
-        "/opt/android-sdk/platform-tools"
+    """Returns the directory where adb is located."""
+    potential_paths = [
+        os.path.expanduser('~/Library/Android/sdk/platform-tools/adb'),
+        os.path.expanduser('~/Android/Sdk/platform-tools/adb'),
     ]
-    
-    for path in common_paths:
-        expanded = os.path.expanduser(path)
-        if os.path.exists(os.path.join(expanded, "adb")):
-            return expanded
-    
-    # Check if adb is in PATH
-    if shutil.which("adb"):
-        return os.path.dirname(shutil.which("adb"))
-    
-    return None
+    for path in potential_paths:
+        if os.path.isfile(path):
+            return path
+    raise EnvironmentError(
+        'adb not found in the common Android SDK paths. Please install Android'
+        " SDK and ensure adb is in one of the expected directories. If it's"
+        ' already installed, point to the installed location.'
+    )
 
 
 def ensure_results_dir(results_dir: str) -> str:
@@ -77,6 +71,10 @@ def validate_android_world_env() -> bool:
     """Validate AndroidWorld environment is properly set up."""
     try:
         import android_world
+        import android_world.agents
+        import android_world.task_evals
+        import android_world.env
+        import android_world.utils
         return True
     except ImportError:
         logging.error("AndroidWorld not installed. Please install from GitHub.")

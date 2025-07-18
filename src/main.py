@@ -31,8 +31,8 @@ def main():
     parser.add_argument(
         "--task", 
         type=str, 
-        required=True,
-        help="Task name to evaluate (e.g., 'single_task_name' or 'all')"
+        default=None,
+        help="Task name to evaluate (random if not specified)"
     )
     
     parser.add_argument(
@@ -53,7 +53,7 @@ def main():
     parser.add_argument(
         "--model_name", 
         type=str, 
-        default="gpt-4",
+        default="gpt-4-turbo-2024-04-09",
         help="OpenAI model name to use"
     )
     
@@ -139,7 +139,7 @@ def main():
     results_dir = ensure_results_dir(args.results_dir)
     
     print(f"🚀 Starting AndroidWorld Enhanced T3A Agent Evaluation")
-    print(f"   Task: {args.task}")
+    print(f"   Task: {args.task if args.task else 'Random'}")
     print(f"   Agent Type: {args.agent_type}")
     print(f"   Model: {args.model_name}")
     print(f"   Max Steps: {args.max_steps}")

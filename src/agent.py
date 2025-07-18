@@ -12,19 +12,13 @@ if android_world_path.exists() and str(android_world_path) not in sys.path:
 import openai
 from typing import Dict, List, Optional
 
-from android_world.agents import t3a
-from android_world.agents import infer
-from android_world.agents import base_agent
-from android_world.env import interface
+from android_world.agents import t3a, infer, base_agent, m3a_utils, agent_utils
+from android_world.agents.t3a import _generate_ui_elements_description_list_full, _summarize_prompt
 
-# Import prompts module
-try:
-    from .prompts import get_prompt_template, format_prompt
-except ImportError:
-    # Fallback for direct execution
-    import prompts
-    get_prompt_template = prompts.get_prompt_template
-    format_prompt = prompts.format_prompt
+from android_world.env import interface, json_action
+
+from prompts import get_prompt_template, format_prompt
+
 
 # Initialize OpenAI client
 openai_client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
@@ -57,13 +51,14 @@ class EnhancedT3A(t3a.T3A):
             self.system_prompt = get_prompt_template(self.prompt_variant)
         except ValueError:
             # Fallback to base prompt if agent type is not recognized
+            print(f"Unknown agent type '{self.prompt_variant}', using base prompt.")
             self.system_prompt = get_prompt_template("base")
     
     def _get_action_prompt(self, goal: str, ui_elements_description: str, history: Optional[List[str]] = None) -> str:
         """Generate action prompt based on variant."""
         # Format history properly
         if history:
-            formatted_history = '\n'.join([f'Step {i+1}: {step}' for i, step in enumerate(history)])
+            formatted_history = '\n'.join(history)
         else:
             formatted_history = "You just started, no action has been performed yet."
         
@@ -142,7 +137,6 @@ class EnhancedT3A(t3a.T3A):
         ui_elements = state.ui_elements
         
         # Generate UI element descriptions
-        from android_world.agents.t3a import _generate_ui_elements_description_list_full
         before_element_list = _generate_ui_elements_description_list_full(
             ui_elements,
             logical_screen_size,
@@ -171,7 +165,6 @@ class EnhancedT3A(t3a.T3A):
         
         # Handle safety check
         if is_safe == False:
-            from android_world.agents import m3a_utils
             action_output = f"""Reason: {m3a_utils.TRIGGER_SAFETY_CLASSIFIER}
 Action: {{"action_type": "status", "goal_status": "infeasible"}}"""
         
@@ -182,7 +175,6 @@ Action: {{"action_type": "status", "goal_status": "infeasible"}}"""
         step_data['action_raw_response'] = raw_response
         
         # Parse the response
-        from android_world.agents import m3a_utils
         reason, action = m3a_utils.parse_reason_action_output(action_output)
         
         # If the output is not in the right format, add it to step summary
@@ -194,7 +186,6 @@ Action: {{"action_type": "status", "goal_status": "infeasible"}}"""
             )
             self.history.append(step_data)
             
-            from android_world.agents import base_agent
             return base_agent.AgentInteractionResult(False, step_data)
         
         print('Action: ' + action)
@@ -202,8 +193,6 @@ Action: {{"action_type": "status", "goal_status": "infeasible"}}"""
         
         # Convert action to JSON
         try:
-            from android_world.agents import agent_utils
-            from android_world.env import json_action
             converted_action = json_action.JSONAction(
                 **agent_utils.extract_json(action),
             )
@@ -216,7 +205,6 @@ Action: {{"action_type": "status", "goal_status": "infeasible"}}"""
             )
             self.history.append(step_data)
             
-            from android_world.agents import base_agent
             return base_agent.AgentInteractionResult(False, step_data)
         
         # Validate index for certain actions
@@ -227,9 +215,7 @@ Action: {{"action_type": "status", "goal_status": "infeasible"}}"""
                     'The parameter index is out of range. Remember the index must be in'
                     ' the UI element list!'
                 )
-                self.history.append(step_data)
-                
-                from android_world.agents import base_agent
+                self.history.append(step_data)   
                 return base_agent.AgentInteractionResult(False, step_data)
         
         # Handle status actions
@@ -239,7 +225,6 @@ Action: {{"action_type": "status", "goal_status": "infeasible"}}"""
             step_data['summary'] = 'Agent thinks the request has been completed.'
             self.history.append(step_data)
             
-            from android_world.agents import base_agent
             return base_agent.AgentInteractionResult(True, step_data)
         
         # Handle answer actions
@@ -257,7 +242,6 @@ Action: {{"action_type": "status", "goal_status": "infeasible"}}"""
             )
             self.history.append(step_data)
             
-            from android_world.agents import base_agent
             return base_agent.AgentInteractionResult(False, step_data)
         
         # Get post-action state
@@ -274,7 +258,6 @@ Action: {{"action_type": "status", "goal_status": "infeasible"}}"""
         step_data['after_element_list'] = ui_elements
         
         # Generate summary
-        from android_world.agents.t3a import _summarize_prompt
         summary_prompt = _summarize_prompt(
             goal,
             action,
@@ -291,7 +274,7 @@ Action: {{"action_type": "status", "goal_status": "infeasible"}}"""
         step_data['summary'] = (
             f'Action selected: {action}. {summary}'
             if raw_response
-            else 'Error calling LLM in summerization phase.'
+            else 'Error calling LLM in summarization phase.'
         )
         print('Summary: ' + summary)
         step_data['summary_raw_response'] = raw_response
@@ -302,11 +285,10 @@ Action: {{"action_type": "status", "goal_status": "infeasible"}}"""
         
         self.history.append(step_data)
         
-        from android_world.agents import base_agent
         return base_agent.AgentInteractionResult(False, step_data)
 def create_agent(
     env: interface.AsyncEnv,
-    model_name: str = "gpt-4",
+    model_name: str = "gpt-4-turbo-2024-04-09",
     prompt_variant: str = "base"
 ) -> EnhancedT3A:
     """Factory function to create an enhanced T3A agent.
