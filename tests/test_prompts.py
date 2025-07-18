@@ -18,12 +18,19 @@ def test_prompt_system():
     
     print("=== Enhanced T3A Prompting System Test ===\n")
     
+    errors = []  # Track any errors
+    
     # Test 1: Check available prompts
     print("1. Available prompt templates:")
-    available_prompts = list_available_prompts()
-    for prompt in available_prompts:
-        print(f"   - {prompt}")
-    print()
+    try:
+        available_prompts = list_available_prompts()
+        for prompt in available_prompts:
+            print(f"   - {prompt}")
+        print()
+    except Exception as e:
+        error_msg = f"Failed to list available prompts: {e}"
+        print(f"   ❌ {error_msg}")
+        errors.append(error_msg)
     
     # Test 2: Load and verify each prompt
     print("2. Testing prompt variants:")
@@ -31,7 +38,7 @@ def test_prompt_system():
     test_vars = {
         "goal": "Turn on Wi-Fi",
         "ui_elements": "0: Switch 'Wi-Fi' <clickable, checked: false>\n1: TextView 'Wi-Fi' <not clickable>",
-        "history": "You just started, no action has been performed yet.",
+        "memory": "You just started, no action has been performed yet.",
         "reflection_context": "No previous reflection available for this task."
     }
     
@@ -54,12 +61,16 @@ def test_prompt_system():
             missing = [elem for elem in required_elements if elem not in formatted]
             
             if missing:
-                print(f"   ✗ {variant.upper()}: Missing elements: {missing}")
+                error_msg = f"{variant.upper()}: Missing elements: {missing}"
+                print(f"   ✗ {error_msg}")
+                errors.append(error_msg)
             else:
                 print(f"   ✓ {variant.upper()}: {len(formatted)} characters, all elements present")
                 
         except Exception as e:
-            print(f"   ✗ {variant.upper()}: ERROR - {e}")
+            error_msg = f"{variant.upper()}: ERROR - {e}"
+            print(f"   ✗ {error_msg}")
+            errors.append(error_msg)
     
     print()
     
@@ -85,7 +96,9 @@ def test_prompt_system():
         if feature in base_template:
             print(f"   ✓ Base contains: {feature}")
         else:
-            print(f"   ✗ Base missing: {feature}")
+            error_msg = f"Base missing: {feature}"
+            print(f"   ✗ {error_msg}")
+            errors.append(error_msg)
     
     # Check few-shot features
     few_shot_features = ["Example", "learn from these examples", "similar reasoning"]
@@ -93,7 +106,9 @@ def test_prompt_system():
         if feature.lower() in few_shot_template.lower():
             print(f"   ✓ Few-shot contains: {feature}")
         else:
-            print(f"   ✗ Few-shot missing: {feature}")
+            error_msg = f"Few-shot missing: {feature}"
+            print(f"   ✗ {error_msg}")
+            errors.append(error_msg)
     
     # Check reflective features
     reflective_features = ["self-reflection", "learn from mistakes", "reflect on"]
@@ -101,9 +116,32 @@ def test_prompt_system():
         if feature.lower() in reflective_template.lower():
             print(f"   ✓ Reflective contains: {feature}")
         else:
-            print(f"   ✗ Reflective missing: {feature}")
+            error_msg = f"Reflective missing: {feature}"
+            print(f"   ✗ {error_msg}")
+            errors.append(error_msg)
     
     print("\n=== Test Complete ===")
+    
+    if errors:
+        print(f"\n❌ Found {len(errors)} error(s):")
+        for error in errors:
+            print(f"   - {error}")
+        return False
+    else:
+        return True
+
 
 if __name__ == "__main__":
-    test_prompt_system()
+    try:
+        success = test_prompt_system()
+        if success:
+            print("✅ All prompt tests passed!")
+            sys.exit(0)
+        else:
+            print("❌ Some prompt tests failed!")
+            sys.exit(1)
+    except Exception as e:
+        print(f"❌ Prompt tests failed: {e}")
+        import traceback
+        traceback.print_exc()
+        sys.exit(1)

@@ -18,6 +18,7 @@ from android_world.agents.t3a import _generate_ui_elements_description_list_full
 from android_world.env import interface, json_action
 
 from prompts import get_prompt_template, format_prompt
+from function_calling_llm import create_llm
 
 
 # Initialize OpenAI client
@@ -25,13 +26,15 @@ openai_client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 
 class EnhancedT3A(t3a.T3A):
-    """T3A agent with enhanced prompting capabilities."""
+    """T3A agent with enhanced prompting capabilities and optional function calling."""
     
     def __init__(
         self,
         env: interface.AsyncEnv,
         llm: infer.LlmWrapper,
         prompt_variant: str = "base",
+        use_memory: bool = True,
+        use_function_calling: bool = False,
         name: str = "EnhancedT3A",
     ):
         """Initialize enhanced T3A agent.
@@ -40,10 +43,14 @@ class EnhancedT3A(t3a.T3A):
             env: The environment.
             llm: The text-only LLM.
             prompt_variant: Type of prompting ("base", "few-shot", "reflective").
+            use_memory: Whether to use memory (step history) in prompts.
+            use_function_calling: Whether to use OpenAI function calling for structured output.
             name: The agent name.
         """
         super().__init__(env, llm, name)
         self.prompt_variant = prompt_variant
+        self.use_memory = use_memory
+        self.use_function_calling = use_function_calling
         self.reflection_history = []
         
         # Load appropriate prompt
@@ -54,43 +61,45 @@ class EnhancedT3A(t3a.T3A):
             print(f"Unknown agent type '{self.prompt_variant}', using base prompt.")
             self.system_prompt = get_prompt_template("base")
     
-    def _get_action_prompt(self, goal: str, ui_elements_description: str, history: Optional[List[str]] = None) -> str:
+    def _get_action_prompt(self, goal: str, ui_elements_description: str, memory: Optional[List[str]] = None) -> str:
         """Generate action prompt based on variant."""
-        # Format history properly
-        if history:
-            formatted_history = '\n'.join(history)
+        # Format memory properly - only if memory is enabled
+        if self.use_memory and memory:
+            formatted_memory = '\n'.join(memory)
+        elif self.use_memory:
+            formatted_memory = "You just started, no action has been performed yet."
         else:
-            formatted_history = "You just started, no action has been performed yet."
+            formatted_memory = "Memory is disabled for this session."
         
         if self.prompt_variant == "base":
             return format_prompt(
                 self.system_prompt, 
                 goal=goal, 
                 ui_elements=ui_elements_description,
-                history=formatted_history
+                memory=formatted_memory
             )
         elif self.prompt_variant == "few_shot":
-            return self._enhance_with_few_shot(goal, ui_elements_description, formatted_history)
+            return self._enhance_with_few_shot(goal, ui_elements_description, formatted_memory)
         elif self.prompt_variant == "reflective":
-            return self._enhance_with_reflection(goal, ui_elements_description, formatted_history)
+            return self._enhance_with_reflection(goal, ui_elements_description, formatted_memory)
         else:
             return format_prompt(
                 self.system_prompt, 
                 goal=goal, 
                 ui_elements=ui_elements_description,
-                history=formatted_history
+                memory=formatted_memory
             )
     
-    def _enhance_with_few_shot(self, goal: str, ui_elements: str, history: str) -> str:
+    def _enhance_with_few_shot(self, goal: str, ui_elements: str, memory: str) -> str:
         """Add few-shot examples to the prompt."""
         return format_prompt(
             self.system_prompt, 
             goal=goal, 
             ui_elements=ui_elements,
-            history=history
+            memory=memory
         )
     
-    def _enhance_with_reflection(self, goal: str, ui_elements: str, history: str) -> str:
+    def _enhance_with_reflection(self, goal: str, ui_elements: str, memory: str) -> str:
         """Add reflection to the prompt."""
         reflection_context = ""
         if self.reflection_history:
@@ -100,13 +109,43 @@ class EnhancedT3A(t3a.T3A):
             self.system_prompt, 
             goal=goal, 
             ui_elements=ui_elements,
-            history=history,
+            memory=memory,
             reflection_context=reflection_context
         )
     
     def add_reflection(self, reflection: str):
         """Add a reflection to the agent's history."""
         self.reflection_history.append(reflection)
+    
+    def _parse_function_calling_output(self, output: str) -> tuple[str, str]:
+        """Parse function calling output to extract reason and action.
+        
+        Args:
+            output: The function calling output in format "Reason: ... Action: {...}"
+            
+        Returns:
+            Tuple of (reason, action_json_string)
+        """
+        try:
+            lines = output.strip().split('\n')
+            reason_line = None
+            action_line = None
+            
+            for line in lines:
+                if line.startswith('Reason:'):
+                    reason_line = line[7:].strip()  # Remove "Reason:" prefix
+                elif line.startswith('Action:'):
+                    action_line = line[7:].strip()  # Remove "Action:" prefix
+            
+            if reason_line and action_line:
+                return reason_line, action_line
+            else:
+                print(f"Could not parse function calling output: {output}")
+                return None, None
+                
+        except Exception as e:
+            print(f"Error parsing function calling output: {e}")
+            return None, None
     
     def reset(self, go_home_on_reset: bool = False):
         """Reset the agent state."""
@@ -142,8 +181,8 @@ class EnhancedT3A(t3a.T3A):
             logical_screen_size,
         )
         
-        # Generate history
-        history = [
+        # Generate memory (step history)
+        memory = [
             'Step ' + str(i + 1) + ': ' + step_info['summary']
             for i, step_info in enumerate(self.history)
         ]
@@ -152,7 +191,7 @@ class EnhancedT3A(t3a.T3A):
         action_prompt = self._get_action_prompt(
             goal,
             before_element_list,
-            history
+            memory
         )
         
         # Save state data
@@ -175,7 +214,10 @@ Action: {{"action_type": "status", "goal_status": "infeasible"}}"""
         step_data['action_raw_response'] = raw_response
         
         # Parse the response
-        reason, action = m3a_utils.parse_reason_action_output(action_output)
+        if self.use_function_calling:
+            reason, action = self._parse_function_calling_output(action_output)
+        else:
+            reason, action = m3a_utils.parse_reason_action_output(action_output)
         
         # If the output is not in the right format, add it to step summary
         if (not reason) or (not action):
@@ -288,8 +330,10 @@ Action: {{"action_type": "status", "goal_status": "infeasible"}}"""
         return base_agent.AgentInteractionResult(False, step_data)
 def create_agent(
     env: interface.AsyncEnv,
-    model_name: str = "gpt-4-turbo-2024-04-09",
-    prompt_variant: str = "base"
+    model_name: str = "gpt-4o-mini",
+    prompt_variant: str = "base",
+    use_memory: bool = True,
+    use_function_calling: bool = False
 ) -> EnhancedT3A:
     """Factory function to create an enhanced T3A agent.
     
@@ -297,9 +341,15 @@ def create_agent(
         env: The environment.
         model_name: The LLM model name.
         prompt_variant: The prompting variant ("base", "few-shot", "reflective").
+        use_memory: Whether to use memory (step history) in prompts.
+        use_function_calling: Whether to use OpenAI function calling for structured output.
         
     Returns:
         An EnhancedT3A agent instance.
     """
-    llm = infer.Gpt4Wrapper(model_name)
-    return EnhancedT3A(env, llm, prompt_variant)
+    if use_function_calling:
+        llm = create_llm(model_name, use_function_calling=True)
+    else:
+        llm = infer.Gpt4Wrapper(model_name)
+    
+    return EnhancedT3A(env, llm, prompt_variant, use_memory, use_function_calling)

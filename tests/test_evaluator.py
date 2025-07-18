@@ -1,3 +1,6 @@
+#!/usr/bin/env python3
+"""Test evaluator functionality."""
+
 import sys, os
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
@@ -39,8 +42,15 @@ def test_episode_success_empty():
 
 
 if __name__ == "__main__":
-    test_step_accuracy()
-    test_episode_success_with_completion()
-    test_episode_success_without_completion()
-    test_episode_success_empty()
-    print("✅ All evaluator tests passed!")
+    try:
+        test_step_accuracy()
+        test_episode_success_with_completion()
+        test_episode_success_without_completion()
+        test_episode_success_empty()
+        print("✅ All evaluator tests passed!")
+        sys.exit(0)
+    except Exception as e:
+        print(f"❌ Evaluator tests failed: {e}")
+        import traceback
+        traceback.print_exc()
+        sys.exit(1)

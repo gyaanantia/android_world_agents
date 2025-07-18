@@ -29,7 +29,7 @@ def test_agent_import():
             base_prompt, 
             goal="Test", 
             ui_elements="Test UI",
-            history="You just started, no action has been performed yet."
+            memory="You just started, no action has been performed yet."
         )
         print("✅ Prompt formatting works")
         

@@ -46,7 +46,7 @@ def main():
     parser.add_argument(
         "--model-name", 
         type=str, 
-        default="gpt-4-turbo-2024-04-09",
+        default="gpt-4o-mini",
         help="OpenAI model name to use"
     )
     
@@ -71,6 +71,19 @@ def main():
         default="INFO",
         choices=["DEBUG", "INFO", "WARNING", "ERROR"],
         help="Logging level"
+    )
+    
+    # Agent configuration
+    parser.add_argument(
+        "--disable-memory",
+        action="store_true",
+        help="Disable memory (step history) in agent prompts"
+    )
+    
+    parser.add_argument(
+        "--function-calling",
+        action="store_true",
+        help="Use OpenAI function calling for structured output"
     )
     
     # Evaluation options
@@ -116,7 +129,9 @@ def main():
                 prompt_variant=args.prompt_variant,
                 model_name=args.model_name,
                 max_steps=args.max_steps,
-                output_dir=results_dir
+                output_dir=results_dir,
+                use_memory=not args.disable_memory,
+                use_function_calling=args.function_calling
             )
             
             if result.get("success"):

@@ -19,10 +19,12 @@ from utils import find_adb_directory, ensure_results_dir
 
 def run_episode(
     task_name: Optional[str] = None,
-    model_name: str = "gpt-4-turbo-2024-04-09",
+    model_name: str = "gpt-4o-mini",
     prompt_variant: str = "base",
     max_steps: int = 25,
-    output_dir: str = "results"
+    output_dir: str = "results",
+    use_memory: bool = True,
+    use_function_calling: bool = False
 ) -> Dict[str, Any]:
     """Run a single episode evaluation.
     
@@ -32,6 +34,8 @@ def run_episode(
         prompt_variant: Prompting variant ("base", "few-shot", "reflective").
         max_steps: Maximum number of steps.
         output_dir: Output directory for results.
+        use_memory: Whether to use memory (step history) in agent prompts.
+        use_function_calling: Whether to use OpenAI function calling for structured output.
         
     Returns:
         Episode results dictionary.
@@ -75,7 +79,7 @@ def run_episode(
     task.initialize_task(env)
     
     # Create agent
-    agent = create_agent(env, model_name, prompt_variant)
+    agent = create_agent(env, model_name, prompt_variant, use_memory, use_function_calling)
     
     print(f"📱 Task: {task_name}")
     print(f"🎯 Goal: {task.goal}")
@@ -232,6 +236,12 @@ def main():
     )
     
     parser.add_argument(
+        "--disable-memory",
+        action="store_true",
+        help="Disable memory (step history) in agent prompts"
+    )
+    
+    parser.add_argument(
         "--output-dir",
         type=str,
         default="results",
@@ -246,7 +256,8 @@ def main():
             model_name=args.model,
             prompt_variant=args.prompt_variant,
             max_steps=args.max_steps,
-            output_dir=args.output_dir
+            output_dir=args.output_dir,
+            use_memory=not args.disable_memory
         )
         
         exit(0 if results["success"] else 1)

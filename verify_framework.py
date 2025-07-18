@@ -99,8 +99,8 @@ def test_prompt_functionality():
             formatted = format_prompt(base_prompt, 
                                     goal="Test goal", 
                                     ui_elements="Test UI", 
-                                    history="Test history")
-            if "{goal}" in formatted or "{ui_elements}" in formatted or "{history}" in formatted:
+                                    memory="Test memory")
+            if "{goal}" in formatted or "{ui_elements}" in formatted or "{memory}" in formatted:
                 print("❌ Prompt formatting failed - variables not substituted")
                 return False
             print("✅ Prompt formatting works correctly")
