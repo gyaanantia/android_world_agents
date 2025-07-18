@@ -2,6 +2,7 @@
 
 import json
 import time
+import numpy as np
 from typing import Dict, List, Any, Optional
 from dataclasses import dataclass
 
@@ -47,48 +48,130 @@ class EpisodeEvaluator:
         # Convert state to serializable format
         state_dict = self._state_to_dict(state)
         
+        # Convert agent_data to serializable format (it may contain numpy arrays)
+        agent_data_dict = self._serialize_agent_data(agent_data)
+        
         step_record = StepRecord(
             step_num=step_num,
             state=state_dict,
             action=action,
-            agent_data=agent_data,
+            agent_data=agent_data_dict,
             timestamp=time.time()
         )
         
         self.steps.append(step_record)
     
+    def _serialize_agent_data(self, agent_data: Dict[str, Any]) -> Dict[str, Any]:
+        """Serialize agent data, handling numpy arrays and other complex objects."""
+        serialized = {}
+        for key, value in agent_data.items():
+            if key == 'before_screenshot' and isinstance(value, np.ndarray):
+                # Exclude screenshot data like we do with state pixels
+                serialized[key] = "<screenshot_excluded>"
+            elif isinstance(value, np.ndarray):
+                # Handle other numpy arrays
+                if value.size > 100:
+                    serialized[key] = f"<large_array: {value.shape} {value.dtype}>"
+                else:
+                    serialized[key] = value.tolist()
+            elif isinstance(value, (np.integer, np.int8, np.int16, np.int32, np.int64, 
+                                   np.uint8, np.uint16, np.uint32, np.uint64)):
+                serialized[key] = int(value)
+            elif isinstance(value, (np.floating, np.float16, np.float32, np.float64)):
+                serialized[key] = float(value)
+            elif isinstance(value, np.bool_):
+                serialized[key] = bool(value)
+            elif isinstance(value, dict):
+                serialized[key] = self._serialize_agent_data(value)
+            elif isinstance(value, (list, tuple)):
+                serialized[key] = [self._serialize_agent_data(item) if isinstance(item, dict) else self._serialize_value_simple(item) for item in value]
+            else:
+                # For other types, try JSON serialization test
+                try:
+                    import json
+                    json.dumps(value)
+                    serialized[key] = value
+                except (TypeError, ValueError):
+                    serialized[key] = str(value)
+        return serialized
+    
+    def _serialize_value_simple(self, value):
+        """Simple serialization for values that might be complex objects."""
+        if isinstance(value, np.ndarray):
+            if value.size > 100:
+                return f"<large_array: {value.shape} {value.dtype}>"
+            return value.tolist()
+        elif isinstance(value, (np.integer, np.int8, np.int16, np.int32, np.int64, 
+                               np.uint8, np.uint16, np.uint32, np.uint64)):
+            return int(value)
+        elif isinstance(value, (np.floating, np.float16, np.float32, np.float64)):
+            return float(value)
+        elif isinstance(value, np.bool_):
+            return bool(value)
+        elif hasattr(value, '__dict__'):
+            # Handle objects like UIElement by converting to dict representation
+            return {k: self._serialize_value_simple(v) for k, v in value.__dict__.items() 
+                   if not k.startswith('_')}
+        else:
+            try:
+                import json
+                json.dumps(value)
+                return value
+            except (TypeError, ValueError):
+                return str(value)
+    
     def _state_to_dict(self, state) -> Dict[str, Any]:
-        """Convert state to JSON-serializable dictionary."""
-        if hasattr(state, 'ui_elements'):
-            ui_elements = []
-            for elem in state.ui_elements:
-                elem_dict = {
-                    "text": elem.text,
-                    "content_desc": elem.content_description,
-                    "class": elem.class_name,
-                    "resource_id": getattr(elem, 'resource_id', None),
-                    "clickable": getattr(elem, 'clickable', False),
-                    "enabled": getattr(elem, 'enabled', True)
-                }
-                
-                if hasattr(elem, 'bbox_pixels'):
-                    elem_dict["bbox_pixels"] = [
-                        elem.bbox_pixels.x_min,
-                        elem.bbox_pixels.y_min,
-                        elem.bbox_pixels.x_max,
-                        elem.bbox_pixels.y_max
-                    ]
-                
-                ui_elements.append(elem_dict)
-            
-            return {
-                "ui_elements": ui_elements,
-                "screen_width": getattr(state, 'screen_width', None),
-                "screen_height": getattr(state, 'screen_height', None)
-            }
+        """Convert environment state to JSON-serializable dictionary.
         
-        # Fallback for unknown state format
-        return {"raw_state": str(state)}
+        Excludes screenshot pixels to avoid huge JSON files.
+        """
+        import numpy as np
+        
+        def _serialize_value(value, key=None):
+            """Recursively serialize values, handling numpy arrays."""
+            # Skip screenshot pixels - they're always (2400, 1080, 3) and not needed for analysis
+            if key == 'pixels' and isinstance(value, np.ndarray):
+                return "<screenshot_excluded>"
+            # Skip protobuf forest objects as they're not JSON serializable
+            elif key == 'forest' and hasattr(value, 'DESCRIPTOR'):
+                return f"<protobuf: {type(value).__name__}>"
+            elif isinstance(value, np.ndarray):
+                # For other numpy arrays (small ones), convert to list
+                if value.size > 100:  # Skip large arrays
+                    return f"<large_array: {value.shape} {value.dtype}>"
+                return value.tolist()
+            elif isinstance(value, (np.integer, np.int8, np.int16, np.int32, np.int64, 
+                                   np.uint8, np.uint16, np.uint32, np.uint64)):
+                return int(value)
+            elif isinstance(value, (np.floating, np.float16, np.float32, np.float64)):
+                return float(value)
+            elif isinstance(value, np.bool_):
+                return bool(value)
+            elif isinstance(value, dict):
+                return {k: _serialize_value(v, k) for k, v in value.items()}
+            elif isinstance(value, (list, tuple)):
+                return [_serialize_value(item) for item in value]
+            elif hasattr(value, '__dict__') and not hasattr(value, 'DESCRIPTOR'):
+                # Convert objects with __dict__ to dictionary, but skip protobuf objects
+                return {k: _serialize_value(v, k) for k, v in value.__dict__.items()
+                       if not k.startswith('_')}
+            elif hasattr(value, 'DESCRIPTOR'):
+                # Handle protobuf objects
+                return f"<protobuf: {type(value).__name__}>"
+            else:
+                # For primitive types or unknown objects, try to convert to string
+                try:
+                    # Test if it's JSON serializable
+                    import json
+                    json.dumps(value)
+                    return value
+                except (TypeError, ValueError):
+                    return str(value)
+        
+        if hasattr(state, '__dict__'):
+            return _serialize_value(state.__dict__)
+        else:
+            return _serialize_value(state)
     
     def generate_results(
         self,
@@ -141,14 +224,14 @@ class EpisodeEvaluator:
             "step_timings": step_timings,
             
             # State information
-            "initial_state": self.steps[0].state if self.steps else None,
+            "initial_state": self._state_to_dict(self.steps[0].state) if self.steps else None,
             "final_state": self._state_to_dict(final_state),
             
             # Full step records (for detailed analysis)
             "step_records": [
                 {
                     "step_num": step.step_num,
-                    "state": step.state,
+                    "state": self._state_to_dict(step.state),
                     "action": step.action,
                     "agent_data": step.agent_data,
                     "timestamp": step.timestamp

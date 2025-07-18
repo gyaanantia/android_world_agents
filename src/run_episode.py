@@ -176,6 +176,9 @@ def run_episode(
         with open(output_file, 'w', encoding='utf-8') as f:
             json.dump(results, f, indent=2)
         
+        # Add output file path to results
+        results['result_file'] = output_file
+        
         # Print detailed summary
         print(f"\n📊 Episode completed!")
         print(f"✅ Success: {success}")

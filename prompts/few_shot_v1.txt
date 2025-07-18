@@ -108,7 +108,7 @@ General
 Action Related
 - Use the `open_app` action whenever you want to open an app (nothing will happen if the app is not installed), do not use the app drawer to open an app unless all other ways have failed.
 - Use the `input_text` action whenever you want to type something (including password) instead of clicking characters on the keyboard one by one. Sometimes there is some default text in the text field you want to type in, remember to delete them before typing.
-- For `click`, `long_press` and `input_text`, the index parameter you pick must be VISIBLE in the screenshot and also in the UI element list given to you (some elements in the list may NOT be visible on the screen so you can not interact with them).
+- For `click`, `long_press` and `input_text`, the index parameter you pick must be VISIBLE on the current screen and also in the UI element list given to you (some elements in the list may NOT be visible on the screen so you can not interact with them).
 - Consider exploring the screen by using the `scroll` action with different directions to reveal additional content.
 - The direction parameter for the `scroll` action can be confusing sometimes as it's opposite to swipe, for example, to view content at the bottom, the `scroll` direction should be set to "down". It has been observed that you have difficulties in choosing the correct direction, so if one does not work, try the opposite as well.
 Text Related Operations
