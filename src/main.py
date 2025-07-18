@@ -15,8 +15,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 from utils import (
     setup_logging, 
     validate_android_world_env, 
-    ensure_results_dir,
-    find_adb_directory
+    ensure_results_dir
 )
 from run_episode import run_episode
 
@@ -35,58 +34,39 @@ def main():
         help="Task name to evaluate (random if not specified)"
     )
     
-    parser.add_argument(
-        "--task_config", 
-        type=str,
-        help="Path to task configuration file"
-    )
-    
     # Agent configuration
     parser.add_argument(
-        "--agent_type", 
+        "--prompt-variant", 
         type=str, 
         default="base",
-        choices=["base", "few_shot", "reflective"],
+        choices=["base", "few-shot", "reflective"],
         help="Type of agent prompting to use"
     )
     
     parser.add_argument(
-        "--model_name", 
+        "--model-name", 
         type=str, 
         default="gpt-4-turbo-2024-04-09",
         help="OpenAI model name to use"
     )
     
     parser.add_argument(
-        "--max_steps", 
+        "--max-steps", 
         type=int, 
         default=30,
         help="Maximum number of steps per episode"
     )
     
-    # Environment configuration
-    parser.add_argument(
-        "--device_id", 
-        type=str,
-        help="Android device ID (use 'adb devices' to list)"
-    )
-    
-    parser.add_argument(
-        "--adb_path", 
-        type=str,
-        help="Path to ADB executable directory"
-    )
-    
     # Output configuration
     parser.add_argument(
-        "--results_dir", 
+        "--results-dir", 
         type=str, 
         default="results",
         help="Directory to save results"
     )
     
     parser.add_argument(
-        "--log_level", 
+        "--log-level", 
         type=str, 
         default="INFO",
         choices=["DEBUG", "INFO", "WARNING", "ERROR"],
@@ -95,29 +75,13 @@ def main():
     
     # Evaluation options
     parser.add_argument(
-        "--num_episodes", 
+        "--num-episodes", 
         type=int, 
         default=1,
         help="Number of episodes to run per task"
     )
     
-    parser.add_argument(
-        "--timeout", 
-        type=int, 
-        default=300,
-        help="Timeout in seconds per episode"
-    )
-    
-    parser.add_argument(
-        "--save_screenshots", 
-        action="store_true",
-        help="Save screenshots during evaluation"
-    )
-    
     args = parser.parse_args()
-    
-    # Set up logging
-    setup_logging(args.log_level)
     
     # Validate environment
     if not validate_android_world_env():
@@ -127,25 +91,19 @@ def main():
         print("  conda activate android_world")
         sys.exit(1)
     
-    # Find ADB if not provided
-    if not args.adb_path:
-        adb_path = find_adb_directory()
-        if not adb_path:
-            print("❌ ADB not found! Please install Android SDK or specify --adb_path")
-            sys.exit(1)
-        args.adb_path = adb_path
-    
     # Ensure results directory exists
     results_dir = ensure_results_dir(args.results_dir)
     
+    # Set up logging (after results directory is created)
+    setup_logging(args.log_level, results_dir)
+    
     print(f"🚀 Starting AndroidWorld Enhanced T3A Agent Evaluation")
     print(f"   Task: {args.task if args.task else 'Random'}")
-    print(f"   Agent Type: {args.agent_type}")
+    print(f"   Prompt variant: {args.prompt_variant}")
     print(f"   Model: {args.model_name}")
     print(f"   Max Steps: {args.max_steps}")
     print(f"   Episodes: {args.num_episodes}")
     print(f"   Results Dir: {results_dir}")
-    print(f"   ADB Path: {args.adb_path}")
     print()
     
     # Run evaluation
@@ -155,15 +113,10 @@ def main():
             
             result = run_episode(
                 task_name=args.task,
-                agent_type=args.agent_type,
+                prompt_variant=args.prompt_variant,
                 model_name=args.model_name,
                 max_steps=args.max_steps,
-                results_dir=results_dir,
-                device_id=args.device_id,
-                adb_path=args.adb_path,
-                timeout=args.timeout,
-                save_screenshots=args.save_screenshots,
-                task_config=args.task_config
+                output_dir=results_dir
             )
             
             if result.get("success"):

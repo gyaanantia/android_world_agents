@@ -82,15 +82,15 @@ def test_prompt_functionality():
         print(f"✅ Found {len(available_prompts)} prompt files")
         
         # Test loading specific prompts
-        for agent_type in ["base", "few_shot", "reflective"]:
+        for prompt_variant in ["base", "few-shot", "reflective"]:
             try:
-                prompt = get_prompt_template(agent_type)
+                prompt = get_prompt_template(prompt_variant)
                 if not prompt:
-                    print(f"❌ {agent_type} prompt is empty")
+                    print(f"❌ {prompt_variant} prompt is empty")
                     return False
-                print(f"✅ {agent_type} prompt loaded successfully")
+                print(f"✅ {prompt_variant} prompt loaded successfully")
             except Exception as e:
-                print(f"❌ {agent_type} prompt loading failed: {e}")
+                print(f"❌ {prompt_variant} prompt loading failed: {e}")
                 return False
         
         # Test prompt formatting
@@ -212,7 +212,7 @@ def main():
         print("1. Ensure conda environment is activated: conda activate android_world")
         print("2. Set OpenAI API key: export OPENAI_API_KEY='your-key'")
         print("3. Start Android emulator with: ~/Library/Android/sdk/emulator/emulator -avd AndroidWorldAvd -no-snapshot -grpc 8554")
-        print("4. Run evaluation: python run_evaluation.py --task your_task --agent_type base")
+        print("4. Run evaluation: python run_evaluation.py --task your_task --prompt-variant base")
         return True
     else:
         print("\n❌ Some tests failed. Please fix the issues above.")

@@ -107,7 +107,7 @@ conda activate android_world
 ~/Library/Android/sdk/emulator/emulator -avd AndroidWorldAvd -no-snapshot -grpc 8554
 
 # Run evaluation
-python run_evaluation.py --task "single_task_name" --agent_type "base"
+python run_evaluation.py --task "single_task_name" --prompt-variant "base"
 ```
 
 ### Advanced Usage
@@ -115,28 +115,23 @@ python run_evaluation.py --task "single_task_name" --agent_type "base"
 ```bash
 python run_evaluation.py \
   --task "single_task_name" \
-  --agent_type "few_shot" \
-  --model_name "gpt-4" \
-  --max_steps 50 \
-  --num_episodes 3 \
-  --results_dir "my_results" \
-  --save_screenshots \
-  --log_level "DEBUG"
+  --prompt-variant "few-shot" \
+  --model-name "gpt-4-turbo-2024-04-09" \
+  --max-steps 50 \
+  --num-episodes 3 \
+  --results-dir "my_results" \
+  --log-level "DEBUG"
 ```
 
 ### Available Options
 
-- `--task`: Task name to evaluate (required)
-- `--agent_type`: Prompting variant (`base`, `few_shot`, `reflective`)
-- `--model_name`: OpenAI model to use (default: `gpt-4`)
-- `--max_steps`: Maximum steps per episode (default: 30)
-- `--num_episodes`: Number of episodes to run (default: 1)
-- `--results_dir`: Directory to save results (default: `results`)
-- `--device_id`: Android device ID (auto-detected if not provided)
-- `--adb_path`: Path to ADB directory (auto-detected if not provided)
-- `--timeout`: Timeout per episode in seconds (default: 300)
-- `--save_screenshots`: Save screenshots during evaluation
-- `--log_level`: Logging level (`DEBUG`, `INFO`, `WARNING`, `ERROR`)
+- `--task`: Task name to evaluate (random if not specified)
+- `--prompt-variant`: Prompting variant (`base`, `few-shot`, `reflective`)
+- `--model-name`: OpenAI model to use (default: `gpt-4-turbo-2024-04-09`)
+- `--max-steps`: Maximum steps per episode (default: 30)
+- `--num-episodes`: Number of episodes to run (default: 1)
+- `--results-dir`: Directory to save results (default: `results`)
+- `--log-level`: Logging level (`DEBUG`, `INFO`, `WARNING`, `ERROR`, default: `INFO`)
 
 
 ## Project Structure
@@ -222,15 +217,15 @@ All prompt templates support variable substitution using `{variable_name}` synta
 
 Each evaluation generates:
 - `episode_results.json`: Detailed step-by-step results
-- `screenshots/`: Screenshots at each step (if enabled)
-- `logs/`: Detailed execution logs
+- `android_world_agents.log`: System logs and framework activity
+- Episode results are saved in the specified `--results-dir` directory (default: `results/`)
 
 ### Result Structure
 
 ```json
 {
   "task_name": "example_task",
-  "agent_type": "few_shot",
+  "prompt_variant": "few-shot",
   "success": true,
   "steps_taken": 12,
   "total_time": 45.2,
@@ -265,7 +260,7 @@ Each evaluation generates:
 3. **Register agent type**:
    ```python
    # In src/agent.py
-   elif self.agent_type == "my_agent":
+   elif self.prompt_variant == "my_agent":
        return self._enhance_with_my_agent(base_prompt, state)
    ```
 
@@ -298,7 +293,7 @@ def add_custom_metric(self, metric_name: str, value: float):
 
 3. **ADB not found**:
    - Install Android SDK via Android Studio
-   - Add ADB to PATH or use `--adb_path` flag
+   - The framework auto-detects ADB location
 
 4. **Device not detected**:
    ```bash
@@ -324,7 +319,7 @@ def add_custom_metric(self, metric_name: str, value: float):
 
 Enable detailed logging:
 ```bash
-python run_evaluation.py --task "my_task" --log_level "DEBUG"
+python run_evaluation.py --task "my_task" --log-level "DEBUG"
 ```
 
 ## Development

@@ -1,6 +1,5 @@
 import os
 from pathlib import Path
-from typing import Dict, Optional
 
 
 PROMPTS_DIR = Path(__file__).resolve().parent.parent / "prompts"
@@ -35,27 +34,28 @@ def list_available_prompts() -> list[str]:
     return [f.name for f in PROMPTS_DIR.iterdir() if f.is_file()]
 
 
-def get_prompt_template(agent_type: str) -> str:
+def get_prompt_template(prompt_variant: str) -> str:
     """
-    Get the appropriate prompt template for a given agent type.
+    Get the appropriate prompt template for a given prompt variant.
     
     Args:
-        agent_type: Type of agent ("base", "few_shot", "reflective")
+        prompt_variant: Type of prompting variant ("base", "few-shot", "reflective")
         
     Returns:
         The prompt template content.
     """
     prompt_mapping = {
         "base": "base_prompt.txt",
-        "few_shot": "few_shot_v1.txt", 
+        "few-shot": "few_shot_v1.txt", 
         "reflective": "reflective_v1.txt"
     }
     
-    filename = prompt_mapping.get(agent_type)
+    filename = prompt_mapping.get(prompt_variant)
     if filename:
         return load_prompt(filename)
     else:
-        raise ValueError(f"Unknown agent type: {agent_type}")
+        available_variants = list(prompt_mapping.keys())
+        raise ValueError(f"Unknown prompt variant: {prompt_variant}. Available variants: {available_variants}")
 
 
 def format_prompt(template: str, **kwargs) -> str:

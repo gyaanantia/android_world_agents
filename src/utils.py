@@ -55,14 +55,15 @@ def format_ui_elements_for_prompt(ui_elements: List[Dict[str, Any]]) -> str:
     return "\n".join(formatted)
 
 
-def setup_logging(log_level: str = "INFO") -> None:
+def setup_logging(log_level: str = "INFO", results_dir: str = ".") -> None:
     """Set up logging configuration."""
+    log_file_path = os.path.join(results_dir, 'android_world_agents.log')
     logging.basicConfig(
         level=getattr(logging, log_level.upper()),
         format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
         handlers=[
             logging.StreamHandler(),
-            logging.FileHandler('android_world_agents.log')
+            logging.FileHandler(log_file_path)
         ]
     )
 

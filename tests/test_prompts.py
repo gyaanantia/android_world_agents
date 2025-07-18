@@ -35,7 +35,7 @@ def test_prompt_system():
         "reflection_context": "No previous reflection available for this task."
     }
     
-    for variant in ['base', 'few_shot', 'reflective']:
+    for variant in ['base', 'few-shot', 'reflective']:
         try:
             # Load template
             template = get_prompt_template(variant)
@@ -67,7 +67,7 @@ def test_prompt_system():
     print("3. Prompt characteristics:")
     
     base_template = get_prompt_template("base")
-    few_shot_template = get_prompt_template("few_shot")
+    few_shot_template = get_prompt_template("few-shot")
     reflective_template = get_prompt_template("reflective")
     
     print(f"   Base prompt: {len(base_template)} characters")
