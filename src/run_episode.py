@@ -1,11 +1,11 @@
 """Main evaluation runner for AndroidWorld LLM agents."""
 
 import argparse
+import glob
 import json
 import os
 import random
 import time
-import uuid
 from typing import Dict, Any, Optional
 
 from android_world import registry
@@ -15,6 +15,63 @@ from android_world.task_evals import task_eval
 from agent import create_agent
 from evaluator import EpisodeEvaluator
 from utils import find_adb_directory, ensure_results_dir
+
+
+def get_next_trial_number(output_dir: str, task_name: str, prompt_variant: str, model_name: str) -> int:
+    """Get the next trial number for a given task/prompt/model combination.
+    
+    Args:
+        output_dir: Directory where result files are saved
+        task_name: Task name
+        prompt_variant: Prompt variant (base, few-shot, etc.)
+        model_name: Model name
+        
+    Returns:
+        Next trial number to use
+    """
+    # Create the base filename pattern without trial number
+    model_safe = model_name.replace('/', '_')
+    
+    # Pattern to match both old UUID format and new trial format
+    pattern_old = f"{task_name}_{prompt_variant}_{model_safe}_*.json"
+    pattern_new = f"{task_name}_{prompt_variant}_{model_safe}_trial*.json"
+    
+    # Find all existing files matching either pattern
+    pattern_old_path = os.path.join(output_dir, pattern_old)
+    pattern_new_path = os.path.join(output_dir, pattern_new)
+    
+    existing_files = set(glob.glob(pattern_old_path) + glob.glob(pattern_new_path))
+    
+    if not existing_files:
+        return 1
+    
+    # Extract trial numbers from existing files
+    trial_numbers = []
+    for file_path in existing_files:
+        filename = os.path.basename(file_path)
+        
+        # Check if it's already in trial format
+        if '_trial' in filename:
+            try:
+                # Extract trial number from filename like "TaskName_variant_model_trial3.json"
+                # or "TaskName_variant_model_uuid_trial3.json" (transition format)
+                trial_part = filename.split('_trial')[1]
+                trial_num = int(trial_part.replace('.json', ''))
+                trial_numbers.append(trial_num)
+            except (IndexError, ValueError):
+                # Skip files that don't match the expected pattern
+                continue
+        else:
+            # It's an old UUID format file, count it as trial 1 if no trial files exist yet
+            # This ensures we don't overwrite existing files
+            if not any('_trial' in f for f in [os.path.basename(f) for f in existing_files]):
+                trial_numbers.append(1)
+    
+    # Return the next trial number
+    if trial_numbers:
+        return max(trial_numbers) + 1
+    else:
+        return 1
 
 
 def run_episode(
@@ -172,9 +229,10 @@ def run_episode(
         })
         
         # Save results
+        trial_number = get_next_trial_number(output_dir, task_name, prompt_variant, model_name)
         output_file = os.path.join(
             output_dir, 
-            f"{task_name}_{prompt_variant}_{model_name.replace('/', '_')}_{uuid.uuid4().hex[:8]}.json"
+            f"{task_name}_{prompt_variant}_{model_name.replace('/', '_')}_trial{trial_number}.json"
         )
         
         with open(output_file, 'w', encoding='utf-8') as f:
