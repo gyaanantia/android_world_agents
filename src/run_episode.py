@@ -73,6 +73,7 @@ def run_episode(
     else:
         task_cls = random.choice(list(task_registry.values()))
         task_name = task_cls.__name__
+        print(f"\n\n\n\n🎲 Randomly selected task: {task_name}\n\n\n\n")
     
     # Initialize task
     task = task_cls(task_cls.generate_random_params())
@@ -81,7 +82,6 @@ def run_episode(
     # Create agent
     agent = create_agent(env, model_name, prompt_variant, use_memory, use_function_calling)
     
-    print(f"📱 Task: {task_name}")
     print(f"🎯 Goal: {task.goal}")
     
     # Create evaluator
@@ -263,7 +263,7 @@ def main():
         exit(0 if results["success"] else 1)
         
     except Exception as e:
-        print(f"❌ Evaluation failed: {e}")
+        print(f"❌ Episode failed: {e}")
         exit(1)
 
 

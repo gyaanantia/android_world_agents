@@ -12,13 +12,41 @@ if android_world_path.exists() and str(android_world_path) not in sys.path:
 import openai
 from typing import Dict, List, Optional
 
-from android_world.agents import t3a, infer, base_agent, m3a_utils, agent_utils
-from android_world.agents.t3a import _generate_ui_elements_description_list_full, _summarize_prompt
+from android_world.agents import t3a, infer, base_agent, m3a_utils, agent_utils, seeact_utils
+from android_world.agents.t3a import _summarize_prompt
+from android_world.agents.m3a import _generate_ui_elements_description_list, _generate_ui_element_description
 
 from android_world.env import interface, json_action
 
 from prompts import get_prompt_template, format_prompt
 from function_calling_llm import create_llm
+
+
+def _generate_seeact_ui_elements_description(
+    ui_elements: list,
+    screen_width_height_px: tuple[int, int],
+) -> str:
+    """Generate SeeAct-style UI element descriptions.
+    
+    Args:
+        ui_elements: UI elements for the current screen.
+        screen_width_height_px: The height and width of the screen in pixels.
+    
+    Returns:
+        SeeAct-style descriptions for each UIElement.
+    """
+    # Filter and format elements using SeeAct's approach
+    formatted_elements = seeact_utils.format_and_filter_elements(ui_elements)
+    
+    # Generate natural language descriptions
+    descriptions = []
+    for element in formatted_elements:
+        descriptions.append(f"{element.abc_index}. {element.description}")
+    
+    if not descriptions:
+        return "No UI elements detected."
+    
+    return "\n".join(descriptions)
 
 
 # Initialize OpenAI client
@@ -175,8 +203,8 @@ class EnhancedT3A(t3a.T3A):
         logical_screen_size = self.env.logical_screen_size
         ui_elements = state.ui_elements
         
-        # Generate UI element descriptions
-        before_element_list = _generate_ui_elements_description_list_full(
+        # Generate UI element descriptions using SeeAct approach
+        before_element_list = _generate_seeact_ui_elements_description(
             ui_elements,
             logical_screen_size,
         )
@@ -290,7 +318,7 @@ Action: {{"action_type": "status", "goal_status": "infeasible"}}"""
         state = self.get_post_transition_state()
         ui_elements = state.ui_elements
         
-        after_element_list = _generate_ui_elements_description_list_full(
+        after_element_list = _generate_seeact_ui_elements_description(
             ui_elements,
             self.env.logical_screen_size,
         )

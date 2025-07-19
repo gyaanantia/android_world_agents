@@ -1,5 +1,5 @@
 # Results
-results/
+results*
 
 # Python
 **/__pycache__/
@@ -22,6 +22,7 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
+.pytest_cache/
 
 # Virtual environments
 .env

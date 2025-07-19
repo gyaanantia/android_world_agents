@@ -412,14 +412,6 @@ python tests/test_function_calling.py
 python tests/test_androidworld_compatibility.py
 ```
 
-### Code Style
-
-The project follows PEP 8 style guidelines. Use:
-```bash
-black src/
-flake8 src/
-```
-
 ## Contributing
 
 1. Fork the repository
