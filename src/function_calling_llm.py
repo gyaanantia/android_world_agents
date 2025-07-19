@@ -64,6 +64,22 @@ class FunctionCallingLLM(infer.LlmWrapper):
                             "app_name": {
                                 "type": "string",
                                 "description": "App name to open (for open_app action)"
+                            },
+                            "x": {
+                                "type": "integer",
+                                "description": "X coordinate for click/tap actions (alternative to index)"
+                            },
+                            "y": {
+                                "type": "integer",
+                                "description": "Y coordinate for click/tap actions (alternative to index)"
+                            },
+                            "keycode": {
+                                "type": "string",
+                                "description": "Android keycode for special key actions (e.g., KEYCODE_ENTER)"
+                            },
+                            "clear_text": {
+                                "type": "boolean",
+                                "description": "Whether to clear existing text before input (for input_text actions)"
                             }
                         },
                         "required": ["action_type"],

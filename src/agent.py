@@ -250,7 +250,7 @@ Action: {{"action_type": "status", "goal_status": "infeasible"}}"""
             return base_agent.AgentInteractionResult(False, step_data)
         
         # Validate index for certain actions
-        if converted_action.action_type in ['click', 'long-press', 'input-text']:
+        if converted_action.action_type in ['click', 'long_press', 'input_text']:
             if converted_action.index is not None and converted_action.index >= len(ui_elements):
                 print('Index out of range.')
                 step_data['summary'] = (
