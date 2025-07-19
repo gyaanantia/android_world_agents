@@ -1,6 +1,6 @@
 # AndroidWorld Enhanced T3A Agent Evaluation Framework
 
-A comprehensive evaluation framework for AndroidWorld that extends the Text-to-Action (T3A) agent with enhanced prompting capabilities including few-shot learning and self-reflection.
+A comprehensive evaluation framework for AndroidWorld that extends the Text-to-Action (T3A) agent with enhanced prompting capabilities including few-shot learning, self-reflection, and OpenAI function calling.
 
 ## Features
 
@@ -9,6 +9,7 @@ A comprehensive evaluation framework for AndroidWorld that extends the Text-to-A
   - Base: Original T3A prompting
   - Few-shot: Learning from examples
   - Reflective: Self-reflection on failures
+- **Function Calling Support**: Optional OpenAI function calling for structured output
 - **Comprehensive Evaluation**: Detailed episode recording and analysis
 - **Modular Design**: Easy to extend with new prompting strategies
 - **Results Tracking**: Automatic saving of evaluation results and screenshots
@@ -74,6 +75,12 @@ This will:
    pip install -e .
    ```
 
+   This installs the package in editable mode with all dependencies including:
+   - OpenAI API client for LLM integration
+   - Image processing libraries (PIL, OpenCV)
+   - Data analysis tools (NumPy, Pandas)
+   - Testing framework (pytest)
+
 ### LLM API Setup
 
 For LLM evaluation, set up your API key:
@@ -106,9 +113,25 @@ conda activate android_world
 # Start Android emulator (in separate terminal)
 ~/Library/Android/sdk/emulator/emulator -avd AndroidWorldAvd -no-snapshot -grpc 8554
 
-# Run evaluation
+# Run evaluation with basic agent
 python run_evaluation.py --task "single_task_name" --prompt-variant "base"
+
+# Run evaluation with function calling
+python run_evaluation.py --task "single_task_name" --prompt-variant "base" --function-calling
 ```
+
+### Function Calling Demo
+
+To see the difference between function calling and regular text parsing:
+
+```bash
+python demo_function_calling.py
+```
+
+This script demonstrates:
+- How function calling structures LLM output
+- Comparison with traditional text parsing
+- Action compatibility between both modes
 
 ### Advanced Usage
 
@@ -116,22 +139,26 @@ python run_evaluation.py --task "single_task_name" --prompt-variant "base"
 python run_evaluation.py \
   --task "single_task_name" \
   --prompt-variant "few-shot" \
-  --model-name "gpt-4-turbo-2024-04-09" \
+  --model-name "gpt-4o-mini" \
   --max-steps 50 \
   --num-episodes 3 \
   --results-dir "my_results" \
-  --log-level "DEBUG"
+  --log-level "DEBUG" \
+  --function-calling \
+  --disable-memory
 ```
 
 ### Available Options
 
 - `--task`: Task name to evaluate (random if not specified)
 - `--prompt-variant`: Prompting variant (`base`, `few-shot`, `reflective`)
-- `--model-name`: OpenAI model to use (default: `gpt-4-turbo-2024-04-09`)
+- `--model-name`: OpenAI model to use (default: `gpt-4o-mini`)
 - `--max-steps`: Maximum steps per episode (default: 30)
 - `--num-episodes`: Number of episodes to run (default: 1)
 - `--results-dir`: Directory to save results (default: `results`)
 - `--log-level`: Logging level (`DEBUG`, `INFO`, `WARNING`, `ERROR`, default: `INFO`)
+- `--function-calling`: Enable OpenAI function calling for structured output
+- `--disable-memory`: Disable memory (step history) in agent prompts
 
 
 ## Project Structure
@@ -140,26 +167,33 @@ python run_evaluation.py \
 ```
 android_world_agents/
 ├── src/
-│   ├── agent.py           # Enhanced T3A agent with prompting variants
-│   ├── evaluator.py       # Episode evaluation and result recording
-│   ├── main.py           # Main entry point
-│   ├── prompts.py        # Prompt management utilities
-│   ├── run_episode.py    # Episode execution logic
-│   └── utils.py          # AndroidWorld integration utilities
+│   ├── agent.py              # Enhanced T3A agent with prompting variants
+│   ├── evaluator.py          # Episode evaluation and result recording
+│   ├── function_calling_llm.py # OpenAI function calling LLM wrapper
+│   ├── main.py               # Main entry point
+│   ├── prompts.py            # Prompt management utilities
+│   ├── run_episode.py        # Episode execution logic
+│   ├── test_utils.py         # Testing utilities
+│   └── utils.py              # AndroidWorld integration utilities
 ├── prompts/
-│   ├── base_prompt.txt   # Base prompting template
-│   ├── few_shot_v1.txt   # Few-shot prompting examples
-│   └── reflective_v1.txt # Self-reflection prompting template
-├── tests/                # Test suite
-│   ├── test_agent.py     # Agent functionality tests
-│   ├── test_evaluator.py # Evaluator tests
-│   ├── test_imports.py   # Import verification tests
-│   └── test_prompts.py   # Prompt system tests
-├── results/              # Evaluation results (auto-created)
-├── run_tests.py          # Test runner script
-├── run_evaluation.py     # Main launcher script
-├── verify_framework.py   # Framework verification script
-└── README.md            # This file
+│   ├── base_prompt.txt       # Base prompting template
+│   ├── few_shot_v1.txt       # Few-shot prompting examples
+│   └── reflective_v1.txt     # Self-reflection prompting template
+├── tests/                    # Test suite
+│   ├── test_agent.py         # Agent functionality tests
+│   ├── test_androidworld_compatibility.py # AndroidWorld integration tests
+│   ├── test_evaluator.py     # Evaluator tests
+│   ├── test_function_calling.py # Function calling tests
+│   ├── test_imports.py       # Import verification tests
+│   └── test_prompts.py       # Prompt system tests
+├── android_world/            # AndroidWorld submodule/clone
+├── results/                  # Evaluation results (auto-created)
+├── pyproject.toml            # Package configuration
+├── run_tests.py              # Test runner script
+├── run_evaluation.py         # Main launcher script
+├── setup.sh                  # Automated setup script
+├── verify_framework.py       # Framework verification script
+└── README.md                 # This file
 ```
 
 ## Agent Types
@@ -178,6 +212,12 @@ android_world_agents/
 - Self-reflects on failures and adjusts strategy
 - Maintains context of previous attempts
 - Improved error recovery
+
+### Function Calling Mode
+- Available for all agent types with `--function-calling` flag
+- Uses OpenAI function calling for structured JSON output
+- Improved action parsing and validation
+- Compatible with all existing agent variants
 
 ## Prompting System
 
@@ -208,8 +248,8 @@ formatted = format_prompt(base_prompt, goal="Open Settings", ui_elements="Button
 All prompt templates support variable substitution using `{variable_name}` syntax:
 - `{goal}`: The current task goal
 - `{ui_elements}`: Description of current UI elements
-- `{previous_actions}`: Previous actions taken (reflective agent)
-- `{reflection}`: Reflection context (reflective agent)
+- `{memory}`: Step history (when memory is enabled)
+- `{reflection_context}`: Reflection context (reflective agent)
 
 ## Results and Analysis
 
@@ -247,22 +287,50 @@ Each evaluation generates:
 
 1. **Create prompting template**:
    ```bash
-   touch prompts/my_agent_v1.md
+   touch prompts/my_agent_v1.txt
    ```
 
 2. **Extend EnhancedT3A class**:
    ```python
-   def _enhance_with_my_agent(self, base_prompt: str, state: dict) -> str:
+   def _enhance_with_my_agent(self, goal: str, ui_elements: str, memory: str) -> str:
        # Your custom prompting logic
-       return enhanced_prompt
+       return format_prompt(
+           self.system_prompt,
+           goal=goal,
+           ui_elements=ui_elements,
+           memory=memory,
+           custom_context="your custom context"
+       )
    ```
 
 3. **Register agent type**:
    ```python
-   # In src/agent.py
+   # In src/agent.py, in _get_action_prompt method
    elif self.prompt_variant == "my_agent":
-       return self._enhance_with_my_agent(base_prompt, state)
+       return self._enhance_with_my_agent(goal, ui_elements_description, formatted_memory)
    ```
+
+### Adding Function Calling Support
+
+Function calling is automatically available for all agent types. To create custom function schemas:
+
+```python
+# In src/function_calling_llm.py
+def create_custom_schema():
+    return {
+        "name": "custom_action",
+        "description": "Custom action description",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "custom_field": {
+                    "type": "string",
+                    "description": "Custom field description"
+                }
+            }
+        }
+    }
+```
 
 ### Adding New Evaluation Metrics
 
@@ -315,6 +383,11 @@ def add_custom_metric(self, metric_name: str, value: float):
    ./setup.sh
    ```
 
+7. **Function calling errors**:
+   - Ensure you're using a compatible OpenAI model (gpt-4o-mini, gpt-4o, gpt-4-turbo)
+   - Function calling requires OpenAI API key to be set
+   - Check that `src/function_calling_llm.py` exists in your installation
+
 ### Debug Mode
 
 Enable detailed logging:
@@ -335,6 +408,8 @@ python tests/test_imports.py
 python tests/test_prompts.py
 python tests/test_agent.py
 python tests/test_evaluator.py
+python tests/test_function_calling.py
+python tests/test_androidworld_compatibility.py
 ```
 
 ### Code Style
@@ -364,9 +439,10 @@ If you use this framework in your research, please cite:
 ```bibtex
 @misc{android_world_enhanced_t3a,
   title={AndroidWorld Enhanced T3A Agent Evaluation Framework},
-  author={Your Name},
-  year={2024},
-  url={https://github.com/your-username/android_world_agents}
+  author={Gyaan Antia}, 
+  year={2025},
+  url={https://github.com/gyaanantia/android_world_agents},
+  note={Enhanced framework with function calling and advanced prompting strategies}
 }
 ```
 
@@ -376,4 +452,5 @@ For issues and questions:
 - Run `python verify_framework.py` to check your setup
 - Check the troubleshooting section above  
 - Review AndroidWorld documentation at [google-research/android_world](https://github.com/google-research/android_world)
+- Review function calling implementation in `src/function_calling_llm.py`
 - Open an issue on this repository's GitHub page
