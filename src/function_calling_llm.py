@@ -101,14 +101,18 @@ class FunctionCallingLLM(infer.LlmWrapper):
             Tuple of (formatted_output, is_safe, raw_response).
         """
         try:
-            response = self.client.chat.completions.create(
-                model=self.model_name,
-                messages=[{"role": "user", "content": prompt}],
-                functions=[self.function_schema],
-                function_call={"name": "execute_android_action"},
-                temperature=0.0
-            )
-            
+            params = {
+                "model": self.model_name,
+                "messages": [{"role": "user", "content": prompt}],
+                "functions": [self.function_schema],
+                "function_call": {"name": "execute_android_action"}
+            }
+
+            if not self.model_name.startswith("o"):
+                params["temperature"] = 0.0
+
+            response = self.client.chat.completions.create(**params)
+
             # Extract function call
             message = response.choices[0].message
             if message.function_call:

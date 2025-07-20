@@ -6,6 +6,7 @@ Main entry point for AndroidWorld Enhanced T3A Agent evaluation framework.
 import argparse
 import sys
 import os
+import logging
 from pathlib import Path
 from typing import List, Optional
 
@@ -13,11 +14,16 @@ from typing import List, Optional
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
 from utils import (
+    suppress_grpc_logging,
     setup_logging, 
     validate_android_world_env, 
     ensure_results_dir
 )
 from run_episode import run_episode
+
+# Suppress gRPC verbose logging before any imports that use gRPC
+# Comment this out to enable gRPC logging for debugging
+suppress_grpc_logging()
 
 
 def main():

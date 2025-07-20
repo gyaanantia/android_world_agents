@@ -3,6 +3,7 @@
 import argparse
 import glob
 import json
+import logging
 import os
 import random
 import time
@@ -14,7 +15,10 @@ from android_world.task_evals import task_eval
 
 from agent import create_agent
 from evaluator import EpisodeEvaluator
-from utils import find_adb_directory, ensure_results_dir
+from utils import find_adb_directory, ensure_results_dir, suppress_grpc_logging
+
+# Suppress gRPC verbose logging before any gRPC communication
+suppress_grpc_logging()
 
 
 def get_next_trial_number(output_dir: str, task_name: str, prompt_variant: str, model_name: str) -> int:

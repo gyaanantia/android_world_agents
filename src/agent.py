@@ -13,7 +13,7 @@ import openai
 from typing import Dict, List, Optional
 
 from android_world.agents import t3a, infer, base_agent, m3a_utils, agent_utils, seeact_utils
-from android_world.agents.t3a import _summarize_prompt
+from android_world.agents.m3a import _summarize_prompt
 from android_world.agents.m3a import _generate_ui_elements_description_list, _generate_ui_element_description
 
 from android_world.env import interface, json_action
@@ -80,6 +80,13 @@ class EnhancedT3A(t3a.T3A):
         self.use_memory = use_memory
         self.use_function_calling = use_function_calling
         self.reflection_history = []
+        
+        # For summary generation, always use regular text LLM (not function calling)
+        if use_function_calling:
+            self.summary_llm = infer.Gpt4Wrapper("gpt-4o-mini")
+            
+        else:
+            self.summary_llm = llm
         
         # Load appropriate prompt
         try:
@@ -150,6 +157,7 @@ class EnhancedT3A(t3a.T3A):
         
         Args:
             output: The function calling output in format "Reason: ... Action: {...}"
+                   or direct JSON format (fallback)
             
         Returns:
             Tuple of (reason, action_json_string)
@@ -159,6 +167,7 @@ class EnhancedT3A(t3a.T3A):
             reason_line = None
             action_line = None
             
+            # First try standard function calling format
             for line in lines:
                 if line.startswith('Reason:'):
                     reason_line = line[7:].strip()  # Remove "Reason:" prefix
@@ -168,8 +177,20 @@ class EnhancedT3A(t3a.T3A):
             if reason_line and action_line:
                 return reason_line, action_line
             else:
-                print(f"Could not parse function calling output: {output}")
-                return None, None
+                # Fallback: try parsing as direct JSON (shouldn't be needed with proper function calling)
+                try:
+                    import json
+                    json_data = json.loads(output.strip())
+                    if 'action_type' in json_data:
+                        reason = json_data.get('text', 'Direct JSON action')
+                        action = json.dumps(json_data)
+                        print(f"⚠️ WARNING: Function calling returned raw JSON instead of formatted output")
+                        return reason, action
+                    else:
+                        return None, None
+                except (json.JSONDecodeError, Exception):
+                    print(f"Could not parse function calling output: {output}")
+                    return None, None
                 
         except Exception as e:
             print(f"Error parsing function calling output: {e}")
@@ -232,7 +253,7 @@ class EnhancedT3A(t3a.T3A):
         
         # Handle safety check
         if is_safe == False:
-            action_output = f"""Reason: {m3a_utils.TRIGGER_SAFETY_CLASSIFIER}
+            action_output = f"""Reason: {m3a_utils.TRIGGER_SAFETY_CLASSIFIER} -- {action_output}
 Action: {{"action_type": "status", "goal_status": "infeasible"}}"""
         
         if not raw_response:
@@ -249,7 +270,10 @@ Action: {{"action_type": "status", "goal_status": "infeasible"}}"""
         
         # If the output is not in the right format, add it to step summary
         if (not reason) or (not action):
-            print('Action prompt output is not in the correct format.')
+            print('❌ Action prompt output is not in the correct format.')
+            print(f'❌ Raw output was: {action_output[:500]}...')
+            print(f'❌ Parsed reason: {reason}')
+            print(f'❌ Parsed action: {action}')
             step_data['summary'] = (
                 'Output for action selection is not in the correct format, so no'
                 ' action is performed.'
@@ -291,8 +315,15 @@ Action: {{"action_type": "status", "goal_status": "infeasible"}}"""
         # Handle status actions
         if converted_action.action_type == 'status':
             if converted_action.goal_status == 'infeasible':
-                print('Agent stopped since it thinks mission impossible.')
-            step_data['summary'] = 'Agent thinks the request has been completed.'
+                print('🛑 Agent stopped since it thinks mission impossible.')
+                step_data['summary'] = 'Agent thinks the task is infeasible.'
+            elif converted_action.goal_status == 'complete':
+                print('✅ Agent stopped since it thinks the task is complete.')
+                step_data['summary'] = 'Agent thinks the request has been completed.'
+            else:
+                print(f'⚠️ Agent stopped with status: {converted_action.goal_status}')
+                step_data['summary'] = f'Agent stopped with status: {converted_action.goal_status}'
+            
             self.history.append(step_data)
             
             return base_agent.AgentInteractionResult(True, step_data)
@@ -327,7 +358,7 @@ Action: {{"action_type": "status", "goal_status": "infeasible"}}"""
         step_data['after_screenshot'] = state.pixels.copy()
         step_data['after_element_list'] = ui_elements
         
-        # Generate summary
+        # Generate summary using regular text LLM (not function calling)
         summary_prompt = _summarize_prompt(
             goal,
             action,
@@ -336,7 +367,8 @@ Action: {{"action_type": "status", "goal_status": "infeasible"}}"""
             after_element_list,
         )
         
-        summary, is_safe, raw_response = self.llm.predict(summary_prompt)
+        summary, is_safe, raw_response = self.summary_llm.predict(summary_prompt)
+        
         if is_safe == False:
             summary = """Summary triggered LLM safety classifier."""
         

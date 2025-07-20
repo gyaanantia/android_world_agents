@@ -6,6 +6,23 @@ from typing import Dict, List, Optional, Any
 import logging
 
 
+def suppress_grpc_logging():
+    """Suppress verbose gRPC logging that can clutter terminal output."""
+    # Set environment variables to reduce gRPC verbosity
+    os.environ['GRPC_VERBOSITY'] = 'ERROR'
+    os.environ['GRPC_TRACE'] = ''
+    os.environ['GRPC_GO_LOG_SEVERITY_LEVEL'] = 'ERROR'
+    os.environ['GRPC_GO_LOG_VERBOSITY_LEVEL'] = '0'
+    
+    # Also suppress gRPC logging at the Python level
+    logging.getLogger('grpc').setLevel(logging.ERROR)
+    logging.getLogger('grpc._channel').setLevel(logging.ERROR)
+    
+    # Suppress common gRPC-related loggers
+    logging.getLogger('grpc.experimental').setLevel(logging.ERROR)
+    logging.getLogger('grpc._cython').setLevel(logging.ERROR)
+
+
 def find_adb_directory() -> Optional[str]:
     """Returns the directory where adb is located."""
     potential_paths = [

@@ -147,6 +147,7 @@ python run_evaluation.py \
   --function-calling \
   --disable-memory
 ```
+NOTE: for `o-series` models, you MUST use the `--function-calling` flag to enable structured output.
 
 ### Available Options
 
@@ -188,6 +189,9 @@ android_world_agents/
 │   └── test_prompts.py       # Prompt system tests
 ├── android_world/            # AndroidWorld submodule/clone
 ├── results/                  # Evaluation results (auto-created)
+├── replay_episode.py         # Episode replay system
+├── advanced_replay.py        # Advanced replay features
+├── batch_analysis.py         # Batch episode analysis
 ├── pyproject.toml            # Package configuration
 ├── run_tests.py              # Test runner script
 ├── run_evaluation.py         # Main launcher script
@@ -251,6 +255,163 @@ All prompt templates support variable substitution using `{variable_name}` synta
 - `{memory}`: Step history (when memory is enabled)
 - `{reflection_context}`: Reflection context (reflective agent)
 
+## Episode Replay System
+
+The framework allows you to replay any evaluated episode step-by-step in the Android emulator, making it easy to analyze agent behavior and debug issues.
+
+### Quick Start
+
+```bash
+# Activate environment and ensure emulator is running
+conda activate android_world
+~/Library/Android/sdk/emulator/emulator -avd AndroidWorldAvd -no-snapshot -grpc 8554
+
+# Replay an episode in interactive mode (step-by-step with user input)
+python replay_episode.py results/my_episode.json
+
+# Replay non-interactively with 1 second delay between steps
+python replay_episode.py results/my_episode.json --non-interactive --delay 1.0
+
+# Replay with custom delay
+python replay_episode.py results/my_episode.json --non-interactive --delay 0.5
+```
+
+### Features
+
+- **Visual Playback**: Watch the exact actions the LLM took in the Android emulator
+- **Step-by-Step Analysis**: See LLM reasoning and action parsing for each step
+- **Interactive Mode**: Pause between steps to examine the UI state
+- **Task Initialization**: Automatically extracts task name from JSON and sets up the correct environment
+- **Action Validation**: Shows successful/failed action executions
+- **Comprehensive Logging**: Detailed output showing action coordinates, UI interactions, and emulator state
+
+### Command Line Options
+
+```bash
+python replay_episode.py <json_file> [options]
+
+Positional Arguments:
+  json_file             Path to the JSON result file to replay
+
+Optional Arguments:
+  --non-interactive     Run without waiting for user input between steps
+  --delay SECONDS       Delay in seconds between steps (non-interactive only, default: 2.0)
+  --log-level LEVEL     Logging level (DEBUG, INFO, WARNING, ERROR, default: INFO)
+```
+
+### Interactive Mode Controls
+
+When running in interactive mode, you can:
+- **Press Enter**: Continue to next step
+- **Type 'q'**: Quit replay immediately
+- **Type 's'**: Switch to non-interactive mode for the rest of the replay
+
+### What You'll See
+
+The replay system shows:
+
+1. **Episode Information**:
+   ```
+   📁 Loaded episode data from: results/my_episode.json
+      Task: SystemCopyToClipboard
+      Model: gpt-4o-mini
+      Prompt Variant: few-shot
+      Success: False
+      Steps Taken: 30
+   ```
+
+2. **Task Setup**:
+   ```
+   🎯 Setting up task: SystemCopyToClipboard
+      Goal: Copy the following text to the clipboard: Sara's Bakery
+   
+   📱 Environment set up successfully
+      ADB Path: /Users/user/Library/Android/sdk/platform-tools/adb
+   ```
+
+3. **Step-by-Step Execution**:
+   ```
+   ═══ Step 5 ═══
+   📝 LLM Response:
+      💭 Reason: Long-press on the note text to enter selection mode and bring up copy options.
+      🎬 Action: {"action_type": "long_press", "index": 0}
+   🔧 Parsed Action: JSONAction(action_type='long_press', index=0)
+   
+   ⚡ Executing action: long_press
+   ✅ Action executed successfully
+   ```
+
+4. **Final Results**:
+   ```
+   🎉 Replay completed!
+      Original Success: False
+      Original Steps: 30
+      Current Task State: ❌ Not Successful
+   ```
+
+### Use Cases
+
+- **Debugging Agent Behavior**: See exactly where and why the agent failed
+- **UI Interaction Analysis**: Understand how the agent interprets and interacts with Android UI
+- **Prompt Engineering**: Analyze LLM reasoning to improve prompts
+- **Task Validation**: Verify that tasks are set up correctly
+- **Training Data Generation**: Create visual examples of successful/failed interactions
+- **Research Analysis**: Study agent behavior patterns across different tasks and models
+
+### Finding Episodes to Replay
+
+Episodes are saved in your results directory with descriptive filenames:
+
+```bash
+# List available episodes
+ls -la results*/
+
+# Example files:
+# SystemCopyToClipboard_few-shot_gpt-4o-mini_trial1.json
+# MarkorCreateNoteAndSms_reflective_gpt-4-turbo_trial2.json
+# FilesDeleteFile_base_gpt-4o-mini_trial1.json
+
+# Find episodes with more steps for interesting replays
+find results*/ -name "*.json" -exec jq '.steps_taken' {} \; -print | grep -B1 -E "[1-9][0-9]+"
+```
+
+### Replay Logs
+
+Replay sessions generate detailed logs in `<results_dir>/replay_logs/` showing:
+- AndroidWorld environment setup
+- ADB commands executed
+- UI element interactions
+- Action execution success/failure
+- Task state changes
+
+### Requirements
+
+- Android emulator must be running on port 5554 with gRPC on 8554
+- Same conda environment as evaluation (`android_world`)
+- JSON episode files from previous evaluations
+
+### Troubleshooting Replay
+
+1. **Emulator not detected**:
+   ```bash
+   # Ensure emulator is running with correct flags
+   ~/Library/Android/sdk/emulator/emulator -avd AndroidWorldAvd -no-snapshot -grpc 8554
+   ```
+
+2. **Task not found**:
+   - The replay system automatically detects task names from JSON files
+   - Ensure the JSON file contains a valid `task_name` field
+
+3. **Action execution failures**:
+   - Some actions may fail due to UI state differences
+   - This is normal and the replay continues with the next action
+
+4. **Environment issues**:
+   ```bash
+   # Verify AndroidWorld is properly installed
+   python verify_framework.py
+   ```
+
 ## Results and Analysis
 
 ### Result Files
@@ -264,20 +425,66 @@ Each evaluation generates:
 
 ```json
 {
-  "task_name": "example_task",
-  "prompt_variant": "few-shot",
-  "success": true,
-  "steps_taken": 12,
-  "total_time": 45.2,
-  "steps": [
+  "task_name": "ExpenseAddMultiple",
+  "model_name": "o3-mini",
+  "prompt_variant": "base",
+  "success": false,
+  "steps_taken": 1,
+  "evaluation_time": 12.63,
+  "goal": "Add the following expenses...",
+  "task_class": "ExpenseAddMultiple",
+  "task_complexity": 6,
+  "agent_claimed_done": true,
+  "episode_terminated_early": false,
+  "task_actually_successful": false,
+  "max_steps": 30,
+  "max_steps_allowed": 30,
+  "total_ui_elements": 1234,
+  "evaluation_timestamp": "2025-01-15T10:30:00Z",
+  "actions": [
+    "Reason: The home screen does not show...\nAction: {\"action_type\": \"status\", \"goal_status\": \"infeasible\"}"
+  ],
+  "responses": [
+    "Reason: The home screen does not show...\nAction: {\"action_type\": \"status\", \"goal_status\": \"infeasible\"}"
+  ],
+  "prompts": ["System prompt and user input for each step"],
+  "step_records": [
     {
-      "step_number": 1,
-      "action": "CLICK(button)",
-      "success": true,
-      "timestamp": "2024-01-15T10:30:00Z",
-      "state": {...}
+      "step_num": 1,
+      "state": {
+        "pixels": "<screenshot_excluded>",
+        "forest": "<protobuf: AndroidAccessibilityForest>",
+        "ui_elements": [
+          {
+            "text": "Phone",
+            "content_description": "Phone",
+            "class_name": "android.widget.TextView",
+            "bbox_pixels": {"x_min": 76, "x_max": 249, "y_min": 1873, "y_max": 2068},
+            "is_clickable": true,
+            "is_editable": false,
+            "package_name": "com.google.android.apps.nexuslauncher"
+          }
+        ]
+      },
+      "action": "Reason: ...\nAction: {...}",
+      "agent_data": {
+        "before_screenshot": "<screenshot_excluded>",
+        "after_screenshot": "<large_array>",
+        "before_element_list": [...],
+        "after_element_list": [...],
+        "action_prompt": "Full prompt sent to LLM",
+        "action_output": "LLM's formatted response",
+        "action_raw_response": "Raw OpenAI API response object",
+        "summary_prompt": "Prompt for step summary",
+        "summary": "Brief summary of what happened in this step",
+        "summary_raw_response": "Raw summary response"
+      },
+      "timestamp": 1752980063.680765
     }
-  ]
+  ],
+  "step_timings": [1.23, 2.45, ...],
+  "initial_state": {...},
+  "final_state": {...}
 }
 ```
 

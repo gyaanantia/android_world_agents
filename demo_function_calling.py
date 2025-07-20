@@ -9,6 +9,11 @@ from pathlib import Path
 # Add src directory to Python path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'src'))
 
+from utils import suppress_grpc_logging
+
+# Suppress gRPC verbose logging before any imports that use gRPC
+suppress_grpc_logging()
+
 from function_calling_llm import create_llm
 from android_world.agents import infer
 from test_utils import confirm_api_usage, check_api_key
