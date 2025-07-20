@@ -86,11 +86,8 @@ This will:
 For LLM evaluation, set up your API key:
 
 ```bash
-# For OpenAI models (GPT-3.5, GPT-4)
 export OPENAI_API_KEY="your-api-key"
 
-# For Anthropic models (Claude)
-export ANTHROPIC_API_KEY="your-api-key"
 ```
 
 ### Verify Installation
@@ -185,13 +182,20 @@ android_world_agents/
 │   ├── test_androidworld_compatibility.py # AndroidWorld integration tests
 │   ├── test_evaluator.py     # Evaluator tests
 │   ├── test_function_calling.py # Function calling tests
+│   ├── test_function_calling_mock.py # Function calling mock tests
+│   ├── test_full_serialization.py # Full serialization tests
 │   ├── test_imports.py       # Import verification tests
+│   ├── test_json_serialization.py # JSON serialization tests
+│   ├── test_prompt_actions.py # Prompt action tests
 │   └── test_prompts.py       # Prompt system tests
-├── android_world/            # AndroidWorld submodule/clone
-├── results/                  # Evaluation results (auto-created)
-├── replay_episode.py         # Episode replay system
+├── android_world/            # AndroidWorld clone (added by setup script)
+├── results/                  # Evaluation results 
+├── test_env/                 # Test environment setup
 ├── advanced_replay.py        # Advanced replay features
 ├── batch_analysis.py         # Batch episode analysis
+├── demo_function_calling.py  # Function calling demonstration
+├── replay_episode.py         # Episode replay system
+├── fix_init_files.sh         # Script to create missing __init__.py files
 ├── pyproject.toml            # Package configuration
 ├── run_tests.py              # Test runner script
 ├── run_evaluation.py         # Main launcher script
@@ -207,7 +211,7 @@ android_world_agents/
 - Good baseline for comparison
 - Minimal prompt engineering
 
-### Few-Shot Agent (`few_shot`)
+### Few-Shot Agent (`few-shot`)
 - Includes example task completions in prompts
 - Learns from successful interaction patterns
 - Better performance on similar tasks
@@ -217,7 +221,7 @@ android_world_agents/
 - Maintains context of previous attempts
 - Improved error recovery
 
-### Function Calling Mode
+### Function Calling Mode (must use for `o-series` models)
 - Available for all agent types with `--function-calling` flag
 - Uses OpenAI function calling for structured JSON output
 - Improved action parsing and validation
@@ -237,7 +241,7 @@ You can customize prompts by editing files in the `prompts/` directory or creati
 
 ```python
 # Example: Loading and using prompts
-from src.prompts import load_prompt, get_prompt_template, format_prompt
+from prompts import load_prompt, get_prompt_template, format_prompt
 
 # Load a specific prompt file
 custom_prompt = load_prompt("my_custom_prompt.txt")
@@ -360,7 +364,7 @@ The replay system shows:
 
 ### Finding Episodes to Replay
 
-Episodes are saved in your results directory with descriptive filenames:
+Episodes are saved in your results directory (specified by `--results-dir`) with descriptive filenames:
 
 ```bash
 # List available episodes

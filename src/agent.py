@@ -113,7 +113,7 @@ class EnhancedT3A(t3a.T3A):
                 ui_elements=ui_elements_description,
                 memory=formatted_memory
             )
-        elif self.prompt_variant == "few_shot":
+        elif self.prompt_variant == "few-shot":
             return self._enhance_with_few_shot(goal, ui_elements_description, formatted_memory)
         elif self.prompt_variant == "reflective":
             return self._enhance_with_reflection(goal, ui_elements_description, formatted_memory)

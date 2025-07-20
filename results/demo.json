@@ -1,0 +1,3338 @@
+{
+  "goal": "Create a new contact for Willow Muller. Their number is +12735883822.",
+  "observations": [
+    {
+      "ui_elements": [
+        {
+          "text": null,
+          "content_desc": null,
+          "class": "android.widget.ScrollView",
+          "bbox_pixels": [
+            0,
+            0,
+            1080,
+            2400
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Home",
+          "class": "android.view.View",
+          "bbox_pixels": [
+            0,
+            128,
+            1080,
+            2337
+          ]
+        },
+        {
+          "text": "Phone",
+          "content_desc": "Phone",
+          "class": "android.widget.TextView",
+          "bbox_pixels": [
+            76,
+            1873,
+            249,
+            2068
+          ]
+        },
+        {
+          "text": "Messages",
+          "content_desc": "Messages",
+          "class": "android.widget.TextView",
+          "bbox_pixels": [
+            328,
+            1873,
+            501,
+            2068
+          ]
+        },
+        {
+          "text": "Chrome",
+          "content_desc": "Chrome",
+          "class": "android.widget.TextView",
+          "bbox_pixels": [
+            580,
+            1873,
+            753,
+            2068
+          ]
+        },
+        {
+          "text": "Gmail",
+          "content_desc": "Predicted app: Gmail",
+          "class": "android.widget.TextView",
+          "bbox_pixels": [
+            832,
+            1873,
+            1004,
+            2068
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Search",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            75,
+            2125,
+            1004,
+            2290
+          ]
+        },
+        {
+          "text": "Sun, Oct 15",
+          "content_desc": "Sun, Oct 15",
+          "class": "android.widget.TextView",
+          "bbox_pixels": [
+            99,
+            292,
+            1023,
+            354
+          ]
+        },
+        {
+          "text": "Gmail",
+          "content_desc": "Gmail",
+          "class": "android.widget.TextView",
+          "bbox_pixels": [
+            309,
+            1479,
+            519,
+            1751
+          ]
+        },
+        {
+          "text": "Photos",
+          "content_desc": "Photos",
+          "class": "android.widget.TextView",
+          "bbox_pixels": [
+            561,
+            1479,
+            771,
+            1751
+          ]
+        },
+        {
+          "text": "YouTube",
+          "content_desc": "YouTube",
+          "class": "android.widget.TextView",
+          "bbox_pixels": [
+            813,
+            1479,
+            1023,
+            1751
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Google app",
+          "class": "android.widget.ImageView",
+          "bbox_pixels": [
+            86,
+            2144,
+            212,
+            2270
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Voice search",
+          "class": "android.widget.ImageView",
+          "bbox_pixels": [
+            741,
+            2125,
+            867,
+            2290
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Google Lens",
+          "class": "android.widget.ImageButton",
+          "bbox_pixels": [
+            867,
+            2125,
+            993,
+            2290
+          ]
+        },
+        {
+          "text": "15:34",
+          "content_desc": "11:34",
+          "class": "android.widget.TextView",
+          "bbox_pixels": [
+            50,
+            1,
+            148,
+            128
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Android System notification: Serial console enabled",
+          "class": "android.widget.ImageView",
+          "bbox_pixels": [
+            148,
+            1,
+            206,
+            128
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Settings notification: Virtual SD card",
+          "class": "android.widget.ImageView",
+          "bbox_pixels": [
+            206,
+            1,
+            264,
+            128
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Wifi signal full.",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            885,
+            35,
+            931,
+            93
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Phone signal full.",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            931,
+            35,
+            970,
+            93
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Battery 100 percent.",
+          "class": "android.widget.LinearLayout",
+          "bbox_pixels": [
+            986,
+            1,
+            1006,
+            128
+          ]
+        }
+      ]
+    },
+    {
+      "ui_elements": [
+        {
+          "text": null,
+          "content_desc": "Create contact",
+          "class": "android.widget.ImageButton",
+          "bbox_pixels": [
+            870,
+            1938,
+            1017,
+            2085
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Contacts",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            0,
+            2127,
+            360,
+            2337
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Highlights",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            360,
+            2127,
+            720,
+            2337
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Fix & manage",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            720,
+            2127,
+            1080,
+            2337
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": null,
+          "class": "android.widget.HorizontalScrollView",
+          "bbox_pixels": [
+            0,
+            308,
+            1080,
+            434
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Open navigation drawer",
+          "class": "android.widget.ImageButton",
+          "bbox_pixels": [
+            53,
+            149,
+            179,
+            275
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Signed in as Device\nAccount and settings.",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            904,
+            149,
+            1038,
+            275
+          ]
+        },
+        {
+          "text": "No contacts yet",
+          "content_desc": null,
+          "class": "android.widget.TextView",
+          "bbox_pixels": [
+            316,
+            1487,
+            765,
+            1567
+          ]
+        },
+        {
+          "text": "Phone contacts",
+          "content_desc": null,
+          "class": "android.widget.Button",
+          "bbox_pixels": [
+            42,
+            308,
+            440,
+            434
+          ]
+        },
+        {
+          "text": "Email contacts",
+          "content_desc": null,
+          "class": "android.widget.Button",
+          "bbox_pixels": [
+            461,
+            308,
+            841,
+            434
+          ]
+        },
+        {
+          "text": "Company",
+          "content_desc": null,
+          "class": "android.widget.Button",
+          "bbox_pixels": [
+            862,
+            308,
+            1080,
+            434
+          ]
+        },
+        {
+          "text": "15:34",
+          "content_desc": "11:34",
+          "class": "android.widget.TextView",
+          "bbox_pixels": [
+            50,
+            1,
+            148,
+            128
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Android System notification: Serial console enabled",
+          "class": "android.widget.ImageView",
+          "bbox_pixels": [
+            148,
+            1,
+            206,
+            128
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Settings notification: Virtual SD card",
+          "class": "android.widget.ImageView",
+          "bbox_pixels": [
+            206,
+            1,
+            264,
+            128
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Wifi signal full.",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            885,
+            35,
+            931,
+            93
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Phone signal full.",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            931,
+            35,
+            970,
+            93
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Battery 100 percent.",
+          "class": "android.widget.LinearLayout",
+          "bbox_pixels": [
+            986,
+            1,
+            1006,
+            128
+          ]
+        }
+      ]
+    },
+    {
+      "ui_elements": [
+        {
+          "text": null,
+          "content_desc": "Cancel",
+          "class": "android.widget.ImageButton",
+          "bbox_pixels": [
+            0,
+            138,
+            147,
+            285
+          ]
+        },
+        {
+          "text": "Create contact",
+          "content_desc": null,
+          "class": "android.widget.TextView",
+          "bbox_pixels": [
+            157,
+            175,
+            551,
+            248
+          ]
+        },
+        {
+          "text": "Save",
+          "content_desc": null,
+          "class": "android.widget.Button",
+          "bbox_pixels": [
+            723,
+            148,
+            954,
+            274
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "More options",
+          "class": "android.widget.ImageView",
+          "bbox_pixels": [
+            954,
+            148,
+            1080,
+            274
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": null,
+          "class": "android.widget.ScrollView",
+          "bbox_pixels": [
+            0,
+            296,
+            1080,
+            2337
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Add contact photo",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            382,
+            349,
+            697,
+            664
+          ]
+        },
+        {
+          "text": "Add picture",
+          "content_desc": null,
+          "class": "android.widget.Button",
+          "bbox_pixels": [
+            406,
+            664,
+            673,
+            790
+          ]
+        },
+        {
+          "text": "First name",
+          "content_desc": null,
+          "class": "android.widget.EditText",
+          "bbox_pixels": [
+            137,
+            858,
+            933,
+            1007
+          ]
+        },
+        {
+          "text": "Last name",
+          "content_desc": null,
+          "class": "android.widget.EditText",
+          "bbox_pixels": [
+            137,
+            1043,
+            933,
+            1192
+          ]
+        },
+        {
+          "text": "Company",
+          "content_desc": null,
+          "class": "android.widget.EditText",
+          "bbox_pixels": [
+            137,
+            1249,
+            933,
+            1398
+          ]
+        },
+        {
+          "text": "Phone",
+          "content_desc": null,
+          "class": "android.widget.EditText",
+          "bbox_pixels": [
+            137,
+            1455,
+            933,
+            1604
+          ]
+        },
+        {
+          "text": "Mobile",
+          "content_desc": "Mobile Phone",
+          "class": "android.widget.Spinner",
+          "bbox_pixels": [
+            137,
+            1640,
+            586,
+            1789
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Show dropdown menu",
+          "class": "android.widget.ImageButton",
+          "bbox_pixels": [
+            460,
+            1651,
+            586,
+            1777
+          ]
+        },
+        {
+          "text": "Email",
+          "content_desc": null,
+          "class": "android.widget.EditText",
+          "bbox_pixels": [
+            137,
+            1851,
+            933,
+            2000
+          ]
+        },
+        {
+          "text": "Home",
+          "content_desc": "Home Email",
+          "class": "android.widget.Spinner",
+          "bbox_pixels": [
+            137,
+            2036,
+            557,
+            2185
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Show dropdown menu",
+          "class": "android.widget.ImageButton",
+          "bbox_pixels": [
+            431,
+            2047,
+            557,
+            2173
+          ]
+        },
+        {
+          "text": "Significant date",
+          "content_desc": null,
+          "class": "android.widget.EditText",
+          "bbox_pixels": [
+            137,
+            2247,
+            933,
+            2337
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Show date picker",
+          "class": "android.widget.ImageButton",
+          "bbox_pixels": [
+            807,
+            2258,
+            933,
+            2337
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Show more name fields",
+          "class": "android.widget.ImageView",
+          "bbox_pixels": [
+            933,
+            843,
+            1080,
+            990
+          ]
+        },
+        {
+          "text": "15:34",
+          "content_desc": "11:34",
+          "class": "android.widget.TextView",
+          "bbox_pixels": [
+            50,
+            1,
+            148,
+            128
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Android System notification: Serial console enabled",
+          "class": "android.widget.ImageView",
+          "bbox_pixels": [
+            148,
+            1,
+            206,
+            128
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Settings notification: Virtual SD card",
+          "class": "android.widget.ImageView",
+          "bbox_pixels": [
+            206,
+            1,
+            264,
+            128
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Wifi signal full.",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            885,
+            35,
+            931,
+            93
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Phone signal full.",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            931,
+            35,
+            970,
+            93
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Battery 100 percent.",
+          "class": "android.widget.LinearLayout",
+          "bbox_pixels": [
+            986,
+            1,
+            1006,
+            128
+          ]
+        }
+      ]
+    },
+    {
+      "ui_elements": [
+        {
+          "text": null,
+          "content_desc": "Cancel",
+          "class": "android.widget.ImageButton",
+          "bbox_pixels": [
+            0,
+            138,
+            147,
+            285
+          ]
+        },
+        {
+          "text": "Create contact",
+          "content_desc": null,
+          "class": "android.widget.TextView",
+          "bbox_pixels": [
+            157,
+            175,
+            551,
+            248
+          ]
+        },
+        {
+          "text": "Save",
+          "content_desc": null,
+          "class": "android.widget.Button",
+          "bbox_pixels": [
+            723,
+            148,
+            954,
+            274
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "More options",
+          "class": "android.widget.ImageView",
+          "bbox_pixels": [
+            954,
+            148,
+            1080,
+            274
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": null,
+          "class": "android.widget.ScrollView",
+          "bbox_pixels": [
+            0,
+            296,
+            1080,
+            1517
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Add contact photo",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            382,
+            349,
+            697,
+            664
+          ]
+        },
+        {
+          "text": "Add picture",
+          "content_desc": null,
+          "class": "android.widget.Button",
+          "bbox_pixels": [
+            406,
+            664,
+            673,
+            790
+          ]
+        },
+        {
+          "text": "Willow",
+          "content_desc": null,
+          "class": "android.widget.EditText",
+          "bbox_pixels": [
+            137,
+            858,
+            933,
+            1007
+          ]
+        },
+        {
+          "text": "Last name",
+          "content_desc": null,
+          "class": "android.widget.EditText",
+          "bbox_pixels": [
+            137,
+            1043,
+            933,
+            1192
+          ]
+        },
+        {
+          "text": "Company",
+          "content_desc": null,
+          "class": "android.widget.EditText",
+          "bbox_pixels": [
+            137,
+            1249,
+            933,
+            1398
+          ]
+        },
+        {
+          "text": "Phone",
+          "content_desc": null,
+          "class": "android.widget.EditText",
+          "bbox_pixels": [
+            137,
+            1455,
+            933,
+            1517
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Show more name fields",
+          "class": "android.widget.ImageView",
+          "bbox_pixels": [
+            933,
+            843,
+            1080,
+            990
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Back",
+          "class": "android.widget.ImageView",
+          "bbox_pixels": [
+            71,
+            2274,
+            254,
+            2400
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Switch input method",
+          "class": "android.widget.ImageView",
+          "bbox_pixels": [
+            826,
+            2274,
+            1009,
+            2400
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "More features",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            5,
+            1517,
+            115,
+            1633
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Sticker Keyboard",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            120,
+            1517,
+            288,
+            1633
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "GIF Keyboard",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            288,
+            1517,
+            456,
+            1633
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Clipboard",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            456,
+            1517,
+            624,
+            1633
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Settings",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            624,
+            1517,
+            792,
+            1633
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Theme settings",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            792,
+            1517,
+            960,
+            1633
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Voice input",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            965,
+            1517,
+            1075,
+            1633
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Q",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            5,
+            1654,
+            112,
+            1808
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "W",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            112,
+            1654,
+            219,
+            1808
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "E",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            219,
+            1654,
+            326,
+            1808
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "R",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            326,
+            1654,
+            433,
+            1808
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "T",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            433,
+            1654,
+            540,
+            1808
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Y",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            540,
+            1654,
+            647,
+            1808
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "U",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            647,
+            1654,
+            754,
+            1808
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "I",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            754,
+            1654,
+            861,
+            1808
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "O",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            861,
+            1654,
+            968,
+            1808
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "P",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            968,
+            1654,
+            1075,
+            1808
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "A",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            5,
+            1808,
+            165,
+            1963
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "S",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            165,
+            1808,
+            272,
+            1963
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "D",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            272,
+            1808,
+            379,
+            1963
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "F",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            379,
+            1808,
+            486,
+            1963
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "G",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            486,
+            1808,
+            593,
+            1963
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "H",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            593,
+            1808,
+            700,
+            1963
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "J",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            700,
+            1808,
+            807,
+            1963
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "K",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            807,
+            1808,
+            914,
+            1963
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "L",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            914,
+            1808,
+            1075,
+            1963
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Shift",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            5,
+            1963,
+            165,
+            2118
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Z",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            165,
+            1963,
+            272,
+            2118
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "X",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            272,
+            1963,
+            379,
+            2118
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "C",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            379,
+            1963,
+            486,
+            2118
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "V",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            486,
+            1963,
+            593,
+            2118
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "B",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            593,
+            1963,
+            700,
+            2118
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "N",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            700,
+            1963,
+            807,
+            2118
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "M",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            807,
+            1963,
+            914,
+            2118
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Delete",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            914,
+            1963,
+            1075,
+            2118
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Symbol keyboard",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            5,
+            2118,
+            165,
+            2274
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": ",",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            165,
+            2118,
+            272,
+            2274
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Emoji button",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            272,
+            2118,
+            379,
+            2274
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Space",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            379,
+            2118,
+            807,
+            2274
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": ".",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            807,
+            2118,
+            914,
+            2274
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Next",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            914,
+            2118,
+            1075,
+            2274
+          ]
+        },
+        {
+          "text": "15:34",
+          "content_desc": "11:34",
+          "class": "android.widget.TextView",
+          "bbox_pixels": [
+            50,
+            1,
+            148,
+            128
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Android System notification: Serial console enabled",
+          "class": "android.widget.ImageView",
+          "bbox_pixels": [
+            148,
+            1,
+            206,
+            128
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Settings notification: Virtual SD card",
+          "class": "android.widget.ImageView",
+          "bbox_pixels": [
+            206,
+            1,
+            264,
+            128
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Wifi signal full.,No internet",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            885,
+            35,
+            931,
+            93
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Phone signal full.",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            931,
+            35,
+            970,
+            93
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Battery 100 percent.",
+          "class": "android.widget.LinearLayout",
+          "bbox_pixels": [
+            986,
+            1,
+            1006,
+            128
+          ]
+        }
+      ]
+    },
+    {
+      "ui_elements": [
+        {
+          "text": null,
+          "content_desc": "Cancel",
+          "class": "android.widget.ImageButton",
+          "bbox_pixels": [
+            0,
+            138,
+            147,
+            285
+          ]
+        },
+        {
+          "text": "Create contact",
+          "content_desc": null,
+          "class": "android.widget.TextView",
+          "bbox_pixels": [
+            157,
+            175,
+            551,
+            248
+          ]
+        },
+        {
+          "text": "Save",
+          "content_desc": null,
+          "class": "android.widget.Button",
+          "bbox_pixels": [
+            723,
+            148,
+            954,
+            274
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "More options",
+          "class": "android.widget.ImageView",
+          "bbox_pixels": [
+            954,
+            148,
+            1080,
+            274
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": null,
+          "class": "android.widget.ScrollView",
+          "bbox_pixels": [
+            0,
+            296,
+            1080,
+            1517
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Add contact photo",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            382,
+            349,
+            697,
+            664
+          ]
+        },
+        {
+          "text": "Add picture",
+          "content_desc": null,
+          "class": "android.widget.Button",
+          "bbox_pixels": [
+            406,
+            664,
+            673,
+            790
+          ]
+        },
+        {
+          "text": "Willow",
+          "content_desc": null,
+          "class": "android.widget.EditText",
+          "bbox_pixels": [
+            137,
+            858,
+            933,
+            1007
+          ]
+        },
+        {
+          "text": "Muller",
+          "content_desc": null,
+          "class": "android.widget.EditText",
+          "bbox_pixels": [
+            137,
+            1043,
+            933,
+            1192
+          ]
+        },
+        {
+          "text": "Company",
+          "content_desc": null,
+          "class": "android.widget.EditText",
+          "bbox_pixels": [
+            137,
+            1249,
+            933,
+            1398
+          ]
+        },
+        {
+          "text": "Phone",
+          "content_desc": null,
+          "class": "android.widget.EditText",
+          "bbox_pixels": [
+            137,
+            1455,
+            933,
+            1517
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Show more name fields",
+          "class": "android.widget.ImageView",
+          "bbox_pixels": [
+            933,
+            843,
+            1080,
+            990
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Back",
+          "class": "android.widget.ImageView",
+          "bbox_pixels": [
+            71,
+            2274,
+            254,
+            2400
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Switch input method",
+          "class": "android.widget.ImageView",
+          "bbox_pixels": [
+            826,
+            2274,
+            1009,
+            2400
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "More features",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            5,
+            1517,
+            115,
+            1633
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Sticker Keyboard",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            120,
+            1517,
+            288,
+            1633
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "GIF Keyboard",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            288,
+            1517,
+            456,
+            1633
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Clipboard",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            456,
+            1517,
+            624,
+            1633
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Settings",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            624,
+            1517,
+            792,
+            1633
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Theme settings",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            792,
+            1517,
+            960,
+            1633
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Voice input",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            965,
+            1517,
+            1075,
+            1633
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Q",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            5,
+            1654,
+            112,
+            1808
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "W",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            112,
+            1654,
+            219,
+            1808
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "E",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            219,
+            1654,
+            326,
+            1808
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "R",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            326,
+            1654,
+            433,
+            1808
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "T",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            433,
+            1654,
+            540,
+            1808
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Y",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            540,
+            1654,
+            647,
+            1808
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "U",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            647,
+            1654,
+            754,
+            1808
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "I",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            754,
+            1654,
+            861,
+            1808
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "O",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            861,
+            1654,
+            968,
+            1808
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "P",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            968,
+            1654,
+            1075,
+            1808
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "A",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            5,
+            1808,
+            165,
+            1963
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "S",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            165,
+            1808,
+            272,
+            1963
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "D",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            272,
+            1808,
+            379,
+            1963
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "F",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            379,
+            1808,
+            486,
+            1963
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "G",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            486,
+            1808,
+            593,
+            1963
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "H",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            593,
+            1808,
+            700,
+            1963
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "J",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            700,
+            1808,
+            807,
+            1963
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "K",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            807,
+            1808,
+            914,
+            1963
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "L",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            914,
+            1808,
+            1075,
+            1963
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Shift",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            5,
+            1963,
+            165,
+            2118
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Z",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            165,
+            1963,
+            272,
+            2118
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "X",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            272,
+            1963,
+            379,
+            2118
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "C",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            379,
+            1963,
+            486,
+            2118
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "V",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            486,
+            1963,
+            593,
+            2118
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "B",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            593,
+            1963,
+            700,
+            2118
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "N",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            700,
+            1963,
+            807,
+            2118
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "M",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            807,
+            1963,
+            914,
+            2118
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Delete",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            914,
+            1963,
+            1075,
+            2118
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Symbol keyboard",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            5,
+            2118,
+            165,
+            2274
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": ",",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            165,
+            2118,
+            272,
+            2274
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Emoji button",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            272,
+            2118,
+            379,
+            2274
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Space",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            379,
+            2118,
+            807,
+            2274
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": ".",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            807,
+            2118,
+            914,
+            2274
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Next",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            914,
+            2118,
+            1075,
+            2274
+          ]
+        },
+        {
+          "text": "15:35",
+          "content_desc": "11:35",
+          "class": "android.widget.TextView",
+          "bbox_pixels": [
+            50,
+            1,
+            148,
+            128
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Android System notification: Serial console enabled",
+          "class": "android.widget.ImageView",
+          "bbox_pixels": [
+            148,
+            1,
+            206,
+            128
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Settings notification: Virtual SD card",
+          "class": "android.widget.ImageView",
+          "bbox_pixels": [
+            206,
+            1,
+            264,
+            128
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Wifi signal full.,No internet",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            885,
+            35,
+            931,
+            93
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Phone one bar.",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            931,
+            35,
+            970,
+            93
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Battery 100 percent.",
+          "class": "android.widget.LinearLayout",
+          "bbox_pixels": [
+            986,
+            1,
+            1006,
+            128
+          ]
+        }
+      ]
+    },
+    {
+      "ui_elements": [
+        {
+          "text": null,
+          "content_desc": "Cancel",
+          "class": "android.widget.ImageButton",
+          "bbox_pixels": [
+            0,
+            138,
+            147,
+            285
+          ]
+        },
+        {
+          "text": "Create contact",
+          "content_desc": null,
+          "class": "android.widget.TextView",
+          "bbox_pixels": [
+            157,
+            175,
+            551,
+            248
+          ]
+        },
+        {
+          "text": "Save",
+          "content_desc": null,
+          "class": "android.widget.Button",
+          "bbox_pixels": [
+            723,
+            148,
+            954,
+            274
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "More options",
+          "class": "android.widget.ImageView",
+          "bbox_pixels": [
+            954,
+            148,
+            1080,
+            274
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": null,
+          "class": "android.widget.ScrollView",
+          "bbox_pixels": [
+            0,
+            296,
+            1080,
+            1517
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Add contact photo",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            382,
+            296,
+            697,
+            404
+          ]
+        },
+        {
+          "text": "Add picture",
+          "content_desc": null,
+          "class": "android.widget.Button",
+          "bbox_pixels": [
+            406,
+            404,
+            673,
+            530
+          ]
+        },
+        {
+          "text": "Willow",
+          "content_desc": null,
+          "class": "android.widget.EditText",
+          "bbox_pixels": [
+            137,
+            598,
+            933,
+            747
+          ]
+        },
+        {
+          "text": "Muller",
+          "content_desc": null,
+          "class": "android.widget.EditText",
+          "bbox_pixels": [
+            137,
+            783,
+            933,
+            932
+          ]
+        },
+        {
+          "text": "Company",
+          "content_desc": null,
+          "class": "android.widget.EditText",
+          "bbox_pixels": [
+            137,
+            989,
+            933,
+            1138
+          ]
+        },
+        {
+          "text": "+1 273-588-3822",
+          "content_desc": null,
+          "class": "android.widget.EditText",
+          "bbox_pixels": [
+            137,
+            1195,
+            933,
+            1344
+          ]
+        },
+        {
+          "text": "Mobile",
+          "content_desc": "Mobile Phone",
+          "class": "android.widget.Spinner",
+          "bbox_pixels": [
+            137,
+            1380,
+            586,
+            1517
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Show dropdown menu",
+          "class": "android.widget.ImageButton",
+          "bbox_pixels": [
+            460,
+            1391,
+            586,
+            1517
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Delete Mobile Phone",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            933,
+            1180,
+            1080,
+            1327
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Show more name fields",
+          "class": "android.widget.ImageView",
+          "bbox_pixels": [
+            933,
+            583,
+            1080,
+            730
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "delete",
+          "class": "android.widget.ImageView",
+          "bbox_pixels": [
+            933,
+            1180,
+            1080,
+            1327
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Back",
+          "class": "android.widget.ImageView",
+          "bbox_pixels": [
+            71,
+            2274,
+            254,
+            2400
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Switch input method",
+          "class": "android.widget.ImageView",
+          "bbox_pixels": [
+            826,
+            2274,
+            1009,
+            2400
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "1",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            5,
+            1517,
+            112,
+            1633
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "2",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            112,
+            1517,
+            219,
+            1633
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "3",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            219,
+            1517,
+            326,
+            1633
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "4",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            326,
+            1517,
+            433,
+            1633
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "5",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            433,
+            1517,
+            540,
+            1633
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "6",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            540,
+            1517,
+            647,
+            1633
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "7",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            647,
+            1517,
+            754,
+            1633
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "8",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            754,
+            1517,
+            861,
+            1633
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "9",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            861,
+            1517,
+            968,
+            1633
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "0",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            968,
+            1517,
+            1075,
+            1633
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "q",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            5,
+            1654,
+            112,
+            1808
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "w",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            112,
+            1654,
+            219,
+            1808
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "e",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            219,
+            1654,
+            326,
+            1808
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "r",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            326,
+            1654,
+            433,
+            1808
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "t",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            433,
+            1654,
+            540,
+            1808
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "y",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            540,
+            1654,
+            647,
+            1808
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "u",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            647,
+            1654,
+            754,
+            1808
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "i",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            754,
+            1654,
+            861,
+            1808
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "o",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            861,
+            1654,
+            968,
+            1808
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "p",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            968,
+            1654,
+            1075,
+            1808
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "a",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            5,
+            1808,
+            165,
+            1963
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "s",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            165,
+            1808,
+            272,
+            1963
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "d",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            272,
+            1808,
+            379,
+            1963
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "f",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            379,
+            1808,
+            486,
+            1963
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "g",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            486,
+            1808,
+            593,
+            1963
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "h",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            593,
+            1808,
+            700,
+            1963
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "j",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            700,
+            1808,
+            807,
+            1963
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "k",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            807,
+            1808,
+            914,
+            1963
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "l",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            914,
+            1808,
+            1075,
+            1963
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Shift",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            5,
+            1963,
+            165,
+            2118
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "z",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            165,
+            1963,
+            272,
+            2118
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "x",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            272,
+            1963,
+            379,
+            2118
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "c",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            379,
+            1963,
+            486,
+            2118
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "v",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            486,
+            1963,
+            593,
+            2118
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "b",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            593,
+            1963,
+            700,
+            2118
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "n",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            700,
+            1963,
+            807,
+            2118
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "m",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            807,
+            1963,
+            914,
+            2118
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Delete",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            914,
+            1963,
+            1075,
+            2118
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Symbol keyboard",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            5,
+            2118,
+            165,
+            2274
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": ",",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            165,
+            2118,
+            272,
+            2274
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Space",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            272,
+            2118,
+            807,
+            2274
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": ".",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            807,
+            2118,
+            914,
+            2274
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Enter",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            914,
+            2118,
+            1075,
+            2274
+          ]
+        },
+        {
+          "text": "15:36",
+          "content_desc": "11:36",
+          "class": "android.widget.TextView",
+          "bbox_pixels": [
+            50,
+            1,
+            148,
+            128
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Android System notification: Serial console enabled",
+          "class": "android.widget.ImageView",
+          "bbox_pixels": [
+            148,
+            1,
+            206,
+            128
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Settings notification: Virtual SD card",
+          "class": "android.widget.ImageView",
+          "bbox_pixels": [
+            206,
+            1,
+            264,
+            128
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Wifi signal full.,No internet",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            885,
+            35,
+            931,
+            93
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Phone signal full.",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            931,
+            35,
+            970,
+            93
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Battery 100 percent.",
+          "class": "android.widget.LinearLayout",
+          "bbox_pixels": [
+            986,
+            1,
+            1006,
+            128
+          ]
+        }
+      ]
+    },
+    {
+      "ui_elements": [
+        {
+          "text": null,
+          "content_desc": null,
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            0,
+            0,
+            1080,
+            2400
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": null,
+          "class": "android.widget.ScrollView",
+          "bbox_pixels": [
+            0,
+            0,
+            1080,
+            2400
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Navigate up",
+          "class": "android.widget.ImageButton",
+          "bbox_pixels": [
+            0,
+            138,
+            147,
+            285
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Edit contact",
+          "class": "android.widget.Button",
+          "bbox_pixels": [
+            702,
+            148,
+            828,
+            274
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Add to favorites",
+          "class": "android.widget.Button",
+          "bbox_pixels": [
+            828,
+            148,
+            954,
+            274
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "More options",
+          "class": "android.widget.ImageView",
+          "bbox_pixels": [
+            954,
+            148,
+            1080,
+            274
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Contact photo",
+          "class": "android.widget.ImageView",
+          "bbox_pixels": [
+            409,
+            335,
+            670,
+            596
+          ]
+        },
+        {
+          "text": "Call",
+          "content_desc": "Call",
+          "class": "android.widget.TextView",
+          "bbox_pixels": [
+            68,
+            891,
+            383,
+            1104
+          ]
+        },
+        {
+          "text": "Text",
+          "content_desc": "Text",
+          "class": "android.widget.TextView",
+          "bbox_pixels": [
+            383,
+            891,
+            698,
+            1104
+          ]
+        },
+        {
+          "text": "Set up",
+          "content_desc": "Set up Duo video calling",
+          "class": "android.widget.TextView",
+          "bbox_pixels": [
+            698,
+            891,
+            1013,
+            1104
+          ]
+        },
+        {
+          "text": "Willow Muller",
+          "content_desc": null,
+          "class": "android.widget.TextView",
+          "bbox_pixels": [
+            53,
+            741,
+            1027,
+            835
+          ]
+        },
+        {
+          "text": "Contact info",
+          "content_desc": null,
+          "class": "android.widget.TextView",
+          "bbox_pixels": [
+            84,
+            1212,
+            328,
+            1272
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Call Mobile +1 273-588-3822",
+          "class": "android.widget.RelativeLayout",
+          "bbox_pixels": [
+            42,
+            1314,
+            1038,
+            1500
+          ]
+        },
+        {
+          "text": "Added Oct 15, 2023",
+          "content_desc": null,
+          "class": "android.widget.TextView",
+          "bbox_pixels": [
+            42,
+            1547,
+            1038,
+            1593
+          ]
+        },
+        {
+          "text": "+1 273-588-3822",
+          "content_desc": null,
+          "class": "android.widget.TextView",
+          "bbox_pixels": [
+            189,
+            1351,
+            503,
+            1411
+          ]
+        },
+        {
+          "text": "Mobile",
+          "content_desc": null,
+          "class": "android.widget.TextView",
+          "bbox_pixels": [
+            189,
+            1411,
+            302,
+            1463
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Text Mobile +1 273-588-3822",
+          "class": "android.widget.Button",
+          "bbox_pixels": [
+            901,
+            1344,
+            1027,
+            1470
+          ]
+        },
+        {
+          "text": "15:37",
+          "content_desc": "11:37",
+          "class": "android.widget.TextView",
+          "bbox_pixels": [
+            50,
+            1,
+            148,
+            128
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Android System notification: Serial console enabled",
+          "class": "android.widget.ImageView",
+          "bbox_pixels": [
+            148,
+            1,
+            206,
+            128
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Settings notification: Virtual SD card",
+          "class": "android.widget.ImageView",
+          "bbox_pixels": [
+            206,
+            1,
+            264,
+            128
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Wifi signal full.,No internet",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            885,
+            35,
+            931,
+            93
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Phone signal full.",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            931,
+            35,
+            970,
+            93
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Battery 100 percent.",
+          "class": "android.widget.LinearLayout",
+          "bbox_pixels": [
+            986,
+            1,
+            1006,
+            128
+          ]
+        }
+      ]
+    },
+    {
+      "ui_elements": [
+        {
+          "text": null,
+          "content_desc": null,
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            0,
+            0,
+            1080,
+            2400
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": null,
+          "class": "android.widget.ScrollView",
+          "bbox_pixels": [
+            0,
+            0,
+            1080,
+            2400
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Navigate up",
+          "class": "android.widget.ImageButton",
+          "bbox_pixels": [
+            0,
+            138,
+            147,
+            285
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Edit contact",
+          "class": "android.widget.Button",
+          "bbox_pixels": [
+            702,
+            148,
+            828,
+            274
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Add to favorites",
+          "class": "android.widget.Button",
+          "bbox_pixels": [
+            828,
+            148,
+            954,
+            274
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "More options",
+          "class": "android.widget.ImageView",
+          "bbox_pixels": [
+            954,
+            148,
+            1080,
+            274
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Contact photo",
+          "class": "android.widget.ImageView",
+          "bbox_pixels": [
+            409,
+            335,
+            670,
+            596
+          ]
+        },
+        {
+          "text": "Call",
+          "content_desc": "Call",
+          "class": "android.widget.TextView",
+          "bbox_pixels": [
+            68,
+            891,
+            383,
+            1104
+          ]
+        },
+        {
+          "text": "Text",
+          "content_desc": "Text",
+          "class": "android.widget.TextView",
+          "bbox_pixels": [
+            383,
+            891,
+            698,
+            1104
+          ]
+        },
+        {
+          "text": "Set up",
+          "content_desc": "Set up Duo video calling",
+          "class": "android.widget.TextView",
+          "bbox_pixels": [
+            698,
+            891,
+            1013,
+            1104
+          ]
+        },
+        {
+          "text": "Willow Muller",
+          "content_desc": null,
+          "class": "android.widget.TextView",
+          "bbox_pixels": [
+            53,
+            741,
+            1027,
+            835
+          ]
+        },
+        {
+          "text": "Contact info",
+          "content_desc": null,
+          "class": "android.widget.TextView",
+          "bbox_pixels": [
+            84,
+            1212,
+            328,
+            1272
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Call Mobile +1 273-588-3822",
+          "class": "android.widget.RelativeLayout",
+          "bbox_pixels": [
+            42,
+            1314,
+            1038,
+            1500
+          ]
+        },
+        {
+          "text": "Added Oct 15, 2023",
+          "content_desc": null,
+          "class": "android.widget.TextView",
+          "bbox_pixels": [
+            42,
+            1547,
+            1038,
+            1593
+          ]
+        },
+        {
+          "text": "+1 273-588-3822",
+          "content_desc": null,
+          "class": "android.widget.TextView",
+          "bbox_pixels": [
+            189,
+            1351,
+            503,
+            1411
+          ]
+        },
+        {
+          "text": "Mobile",
+          "content_desc": null,
+          "class": "android.widget.TextView",
+          "bbox_pixels": [
+            189,
+            1411,
+            302,
+            1463
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Text Mobile +1 273-588-3822",
+          "class": "android.widget.Button",
+          "bbox_pixels": [
+            901,
+            1344,
+            1027,
+            1470
+          ]
+        },
+        {
+          "text": "15:37",
+          "content_desc": "11:37",
+          "class": "android.widget.TextView",
+          "bbox_pixels": [
+            50,
+            1,
+            148,
+            128
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Android System notification: Serial console enabled",
+          "class": "android.widget.ImageView",
+          "bbox_pixels": [
+            148,
+            1,
+            206,
+            128
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Settings notification: Virtual SD card",
+          "class": "android.widget.ImageView",
+          "bbox_pixels": [
+            206,
+            1,
+            264,
+            128
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Wifi signal full.,No internet",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            885,
+            35,
+            931,
+            93
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Phone signal full.",
+          "class": "android.widget.FrameLayout",
+          "bbox_pixels": [
+            931,
+            35,
+            970,
+            93
+          ]
+        },
+        {
+          "text": null,
+          "content_desc": "Battery 100 percent.",
+          "class": "android.widget.LinearLayout",
+          "bbox_pixels": [
+            986,
+            1,
+            1006,
+            128
+          ]
+        }
+      ]
+    }
+  ],
+  "actions": [
+    {
+      "action_type": "open_app",
+      "app_name": "Contacts"
+    },
+    {
+      "action_type": "click",
+      "index": 0
+    },
+    {
+      "action_type": "input_text",
+      "text": "Willow",
+      "index": 7
+    },
+    {
+      "action_type": "input_text",
+      "text": "Muller",
+      "index": 8
+    },
+    {
+      "action_type": "input_text",
+      "text": "+12735883822",
+      "index": 10
+    },
+    {
+      "action_type": "click",
+      "index": 2
+    },
+    {
+      "action_type": "status",
+      "goal_status": "complete"
+    }
+  ],
+  "interaction_trace": ""
+}
