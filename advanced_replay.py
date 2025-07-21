@@ -19,6 +19,13 @@ from typing import Dict, Any, List, Optional, Tuple
 from pathlib import Path
 import tempfile
 
+try:
+    from PIL import Image
+    import numpy as np
+    PIL_AVAILABLE = True
+except ImportError:
+    PIL_AVAILABLE = False
+
 # Add project root and src to Python path
 project_root = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, project_root)
@@ -47,8 +54,7 @@ class AdvancedEpisodeReplayer:
         json_file_path: str, 
         mode: str = "replay",
         save_screenshots: bool = False,
-        validate_actions: bool = True,
-        compare_states: bool = False
+        validate_actions: bool = True
     ):
         """Initialize the advanced replayer.
         
@@ -57,13 +63,11 @@ class AdvancedEpisodeReplayer:
             mode: Replay mode ('replay', 'debug', 'analyze')
             save_screenshots: Whether to save screenshots at each step
             validate_actions: Whether to validate actions before executing
-            compare_states: Whether to compare states with original episode
         """
         self.json_file_path = json_file_path
         self.mode = mode
         self.save_screenshots = save_screenshots
         self.validate_actions = validate_actions
-        self.compare_states = compare_states
         self.episode_data = None
         self.env = None
         self.task = None
@@ -122,11 +126,27 @@ class AdvancedEpisodeReplayer:
     def setup_environment(self):
         """Set up the AndroidWorld environment and task."""
         task_name = self.episode_data.get('task_name')
+        if not task_name:
+            raise ValueError("No task_name found in episode data")
+            
+        # Get task registry and task class
+        task_registry = registry.TaskRegistry().get_registry(
+            registry.TaskRegistry.ANDROID_WORLD_FAMILY
+        )
         
-        # Get task
-        self.task = registry.get_random_task() if task_name == 'random' else registry.get_task(task_name)
-        if not self.task:
+        if task_name not in task_registry:
+            available_tasks = list(task_registry.keys())
+            print(f"❌ Task '{task_name}' not found. Available tasks:")
+            for task in available_tasks[:10]:  # Show first 10
+                print(f"   - {task}")
+            if len(available_tasks) > 10:
+                print(f"   ... and {len(available_tasks) - 10} more")
             raise ValueError(f"Task '{task_name}' not found in registry")
+            
+        task_cls = task_registry[task_name]
+        
+        # Initialize task with random parameters
+        self.task = task_cls(task_cls.generate_random_params())
             
         print(f"🎯 Task Setup")
         print(f"   Name: {task_name}")
@@ -136,7 +156,18 @@ class AdvancedEpisodeReplayer:
         
         # Set up environment
         adb_path = find_adb_directory()
-        self.env = env_launcher.run_task(self.task, adb_path=adb_path)
+        self.env = env_launcher.load_and_setup_env(
+            console_port=5554,
+            adb_path=adb_path
+        )
+        self.env.reset(go_home=True)
+        
+        # Initialize task in environment
+        self.task.initialize_task(self.env)
+        
+        print(f"📱 Environment set up successfully")
+        print(f"   ADB Path: {adb_path}")
+        print()
         
         print(f"📱 Environment Ready")
         print(f"   ADB: {adb_path}")
@@ -247,15 +278,38 @@ class AdvancedEpisodeReplayer:
             return None
             
         try:
-            state = self.env.get_state(include_ui_tree=False)
-            if hasattr(state, 'pixels') and state.pixels:
-                filename = f"{prefix}step_{step_num:03d}.png" if prefix else f"step_{step_num:03d}.png"
-                filepath = os.path.join(self.screenshots_dir, filename)
-                
-                # Save screenshot (this depends on the state.pixels format)
-                # You might need to adjust this based on how AndroidWorld stores pixels
-                with open(filepath, 'wb') as f:
-                    f.write(state.pixels)
+            state = self.env.get_state()
+            if hasattr(state, 'pixels') and state.pixels is not None:
+                # Check if pixels has data (handle numpy arrays properly)
+                try:
+                    if len(state.pixels) > 0:
+                        filename = f"{prefix}step_{step_num:03d}.png" if prefix else f"step_{step_num:03d}.png"
+                        filepath = os.path.join(self.screenshots_dir, filename)
+                        
+                        # Handle different pixel formats
+                        if isinstance(state.pixels, bytes):
+                            # Raw bytes - save directly
+                            with open(filepath, 'wb') as f:
+                                f.write(state.pixels)
+                        elif PIL_AVAILABLE and hasattr(np, 'ndarray') and isinstance(state.pixels, np.ndarray):
+                            # NumPy array - convert to image
+                            if len(state.pixels.shape) == 3:  # H x W x C
+                                img = Image.fromarray(state.pixels.astype(np.uint8))
+                                img.save(filepath)
+                            else:
+                                # Fallback - save as raw bytes
+                                with open(filepath, 'wb') as f:
+                                    f.write(state.pixels.tobytes())
+                        else:
+                            # Unknown format - try direct write
+                            with open(filepath, 'wb') as f:
+                                f.write(state.pixels)
+                except (TypeError, AttributeError):
+                    # If len() fails, it might be a scalar or different structure
+                    filename = f"{prefix}step_{step_num:03d}.png" if prefix else f"step_{step_num:03d}.png"
+                    filepath = os.path.join(self.screenshots_dir, filename)
+                    with open(filepath, 'wb') as f:
+                        f.write(state.pixels)
                     
                 return filepath
         except Exception as e:
@@ -363,15 +417,16 @@ class AdvancedEpisodeReplayer:
     def inspect_environment(self):
         """Inspect current environment state."""
         try:
-            state = self.env.get_state(include_ui_tree=True)
+            state = self.env.get_state()
             print("\n🔍 Environment State:")
             print(f"   UI Elements: {len(state.ui_elements) if state.ui_elements else 0}")
             
             if state.ui_elements:
                 print("   Top 10 UI Elements:")
                 for i, element in enumerate(state.ui_elements[:10]):
-                    text = element.get('text', '') or element.get('content_description', '') or element.get('class_name', '')
-                    clickable = element.get('is_clickable', False)
+                    # Access UIElement attributes directly instead of using .get()
+                    text = getattr(element, 'text', '') or getattr(element, 'content_description', '') or getattr(element, 'class_name', '')
+                    clickable = getattr(element, 'is_clickable', False)
                     print(f"     {i}: {text[:50]}... {'[clickable]' if clickable else ''}")
                     
             # Check task state
@@ -514,12 +569,6 @@ def main():
     )
     
     parser.add_argument(
-        "--compare-states",
-        action="store_true",
-        help="Compare states with original episode (experimental)"
-    )
-    
-    parser.add_argument(
         "--log-level",
         type=str,
         default="INFO",
@@ -552,8 +601,7 @@ def main():
         json_file_path=args.json_file,
         mode=args.mode,
         save_screenshots=args.screenshots,
-        validate_actions=not args.no_validation,
-        compare_states=args.compare_states
+        validate_actions=not args.no_validation
     )
     
     try:
