@@ -329,14 +329,31 @@ class GeminiPromptGenerator:
             goal: Task goal.
             
         Returns:
-            Simple fallback prompt.
+            Simple fallback prompt with proper format requirements.
         """
         return f"""Your task is to complete the following goal: {goal}
 
 Analyze the current screen carefully and take appropriate actions to accomplish this task. 
 Look for relevant UI elements like buttons, text fields, and navigation options.
 If you can't find what you need immediately, try scrolling or navigating to other screens.
-Use the most direct path to complete the task efficiently."""
+Use the most direct path to complete the task efficiently.
+
+IMPORTANT: You must respond in the exact format required by AndroidWorld:
+
+Reason: [Explain why you're taking this action]
+Action: {{"action_type": "...", ...}}
+
+Available actions include:
+- click, double_tap, long_press (with index)
+- input_text (with text and index)
+- swipe, scroll (with direction)
+- navigate_home, navigate_back
+- open_app (with app_name)
+- status (with goal_status: "complete" or "infeasible")
+- answer (with text)
+- wait
+
+Use the status action with "complete" when the task is finished successfully."""
     
     def test_connection(self) -> bool:
         """Test connection to Gemini API.

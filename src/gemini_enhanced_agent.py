@@ -22,6 +22,7 @@ from PIL import Image
 # Import existing agent components
 from src.agent import EnhancedT3A, create_agent
 from src import prompts
+from src.prompts import get_gemini_enhanced_prompt, format_prompt
 from android_world.env import interface
 
 # Try to import Gemini functionality with graceful fallback
@@ -140,29 +141,51 @@ class GeminiEnhancedT3A(EnhancedT3A):
             return self._get_action_prompt(goal, ui_elements_description, memory)
         
         try:
-            # Generate Gemini-enhanced prompt
+            # Generate Gemini visual analysis
             gemini_result = self.gemini_generator.generate_agent_prompt(
                 screenshot=screenshot,
                 goal=goal
             )
             
-            # Extract the agent prompt from the result dictionary
+            # Extract the Gemini analysis from the result
             if gemini_result and gemini_result.get('success', False):
-                agent_prompt = gemini_result.get('agent_prompt', '')
-                if agent_prompt and agent_prompt.strip():
+                # Get the raw Gemini response which should be in the ● format
+                raw_response = gemini_result.get('raw_response', '')
+                
+                if raw_response and raw_response.strip():
+                    # Use the Gemini-enhanced prompt template
+                    gemini_prompt_template = prompts.get_gemini_enhanced_prompt(self.prompt_variant)
+                    
+                    # Format memory properly
+                    if self.use_memory and memory:
+                        formatted_memory = '\n'.join(memory)
+                    elif self.use_memory:
+                        formatted_memory = "You just started, no action has been performed yet."
+                    else:
+                        formatted_memory = "Memory is disabled for this session."
+                    
+                    # Format the enhanced prompt with Gemini analysis
+                    enhanced_prompt = prompts.format_prompt(
+                        gemini_prompt_template,
+                        goal=goal,
+                        ui_elements=ui_elements_description,
+                        memory=formatted_memory,
+                        gemini_analysis=raw_response.strip()
+                    )
+                    
                     print("✅ Using Gemini-enhanced prompt")
-                    return agent_prompt
+                    return enhanced_prompt
                 else:
-                    print("⚠️ Gemini returned empty prompt, using standard prompting")
+                    print("⚠️ Gemini returned empty analysis, using standard prompting")
                     return self._get_action_prompt(goal, ui_elements_description, memory)
             else:
                 error_msg = gemini_result.get('error', 'Unknown error') if gemini_result else 'No result returned'
-                print(f"⚠️ Gemini prompt generation failed: {error_msg}")
+                print(f"⚠️ Gemini visual analysis failed: {error_msg}")
                 print("⚠️ Falling back to standard prompting")
                 return self._get_action_prompt(goal, ui_elements_description, memory)
                 
         except Exception as e:
-            print(f"⚠️ Gemini prompt generation failed: {e}")
+            print(f"⚠️ Gemini enhanced prompting failed: {e}")
             print("⚠️ Falling back to standard prompting")
             return self._get_action_prompt(goal, ui_elements_description, memory)
     

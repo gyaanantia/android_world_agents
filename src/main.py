@@ -44,9 +44,9 @@ def main():
     parser.add_argument(
         "--prompt-variant", 
         type=str, 
-        default=None,
+        default="base",
         choices=["base", "few-shot", "reflective"],
-        help="Type of agent prompting to use (cannot be used with --gemini)"
+        help="Type of agent prompting to use (works with or without --gemini)"
     )
     
     parser.add_argument(
@@ -95,7 +95,7 @@ def main():
     parser.add_argument(
         "--gemini",
         action="store_true",
-        help="Use Gemini 2.5 Flash for visual UI analysis and dynamic prompting (cannot be used with --prompt-variant)"
+        help="Use Gemini 2.5 Flash for visual UI analysis and enhanced prompting (works with any --prompt-variant)"
     )
     
     # Evaluation options
@@ -108,19 +108,8 @@ def main():
     
     args = parser.parse_args()
     
-    # Validate argument combinations
-    if args.gemini and args.prompt_variant:
-        print("❌ Error: Cannot use --gemini with --prompt-variant!")
-        print("   When using Gemini, the prompt is generated dynamically by visual analysis.")
-        print("   Remove --prompt-variant flag when using --gemini.")
-        sys.exit(1)
-    
-    if not args.gemini and not args.prompt_variant:
-        print("❌ Error: Must specify either --prompt-variant or --gemini!")
-        print("   Choose one of:")
-        print("   --prompt-variant {base,few-shot,reflective}  (for standard prompting)")
-        print("   --gemini                                     (for dynamic visual prompting)")
-        sys.exit(1)
+    # Validate argument combinations - no mutual exclusivity needed anymore
+    # Both --prompt-variant and --gemini can be used together
     
     # Check for required API keys
     if args.gemini and not os.getenv("GOOGLE_API_KEY"):
@@ -146,10 +135,12 @@ def main():
     
     print(f"🚀 Starting AndroidWorld Enhanced T3A Agent Evaluation")
     print(f"   Task: {args.task if args.task else 'Random'}")
-    if not args.gemini:
-        print(f"   Prompt variant: {args.prompt_variant}")
+    if args.gemini:
+        print(f"   Prompting: Gemini-enhanced {args.prompt_variant}")
+        print(f"   Visual Analysis: Enabled (Gemini 2.5 Flash)")
     else:
-        print(f"   Gemini visual prompting: Enabled")
+        print(f"   Prompting: Standard {args.prompt_variant}")
+        print(f"   Visual Analysis: Disabled")
     print(f"   Model: {args.model_name}")
     print(f"   Max Steps: {args.max_steps}")
     print(f"   Episodes: {args.num_episodes}")

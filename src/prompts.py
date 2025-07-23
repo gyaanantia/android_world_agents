@@ -36,10 +36,11 @@ def list_available_prompts() -> list[str]:
 
 def get_prompt_template(prompt_variant: str) -> str:
     """
-    Get the appropriate prompt template for a given prompt variant.
+    Get the prompt template for a specific variant.
     
     Args:
-        prompt_variant: Type of prompting variant ("base", "few-shot", "reflective")
+        prompt_variant: Type of prompting variant ("base", "few-shot", "reflective", 
+                       "gemini-base", "gemini-few-shot", "gemini-reflective")
         
     Returns:
         The prompt template content.
@@ -47,7 +48,10 @@ def get_prompt_template(prompt_variant: str) -> str:
     prompt_mapping = {
         "base": "base_prompt.txt",
         "few-shot": "few_shot_v1.txt", 
-        "reflective": "reflective_v1.txt"
+        "reflective": "reflective_v1.txt",
+        "gemini-base": "gemini_enhanced_base_prompt.txt",
+        "gemini-few-shot": "gemini_enhanced_few_shot_v1.txt",
+        "gemini-reflective": "gemini_enhanced_reflective_v1.txt"
     }
     
     filename = prompt_mapping.get(prompt_variant)
@@ -56,6 +60,20 @@ def get_prompt_template(prompt_variant: str) -> str:
     else:
         available_variants = list(prompt_mapping.keys())
         raise ValueError(f"Unknown prompt variant: {prompt_variant}. Available variants: {available_variants}")
+
+
+def get_gemini_enhanced_prompt(prompt_variant: str) -> str:
+    """
+    Get the Gemini-enhanced version of a prompt variant.
+    
+    Args:
+        prompt_variant: Base prompt variant ("base", "few-shot", "reflective")
+        
+    Returns:
+        The Gemini-enhanced prompt template content.
+    """
+    gemini_variant = f"gemini-{prompt_variant}"
+    return get_prompt_template(gemini_variant)
 
 
 def format_prompt(template: str, **kwargs) -> str:
