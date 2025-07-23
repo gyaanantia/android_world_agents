@@ -21,7 +21,7 @@ from utils import find_adb_directory, ensure_results_dir, suppress_grpc_logging
 suppress_grpc_logging()
 
 
-def get_next_trial_number(output_dir: str, task_name: str, prompt_variant: str, model_name: str) -> int:
+def get_next_trial_number(output_dir: str, task_name: str, prompt_variant: str, model_name: str, use_gemini: bool = False) -> int:
     """Get the next trial number for a given task/prompt/model combination.
     
     Args:
@@ -29,16 +29,18 @@ def get_next_trial_number(output_dir: str, task_name: str, prompt_variant: str, 
         task_name: Task name
         prompt_variant: Prompt variant (base, few-shot, etc.)
         model_name: Model name
+        use_gemini: Whether Gemini is being used (affects filename pattern)
         
     Returns:
         Next trial number to use
     """
     # Create the base filename pattern without trial number
     model_safe = model_name.replace('/', '_')
+    gemini_suffix = "_gemini" if use_gemini else ""
     
     # Pattern to match both old UUID format and new trial format
-    pattern_old = f"{task_name}_{prompt_variant}_{model_safe}_*.json"
-    pattern_new = f"{task_name}_{prompt_variant}_{model_safe}_trial*.json"
+    pattern_old = f"{task_name}_{prompt_variant}_{model_safe}{gemini_suffix}_*.json"
+    pattern_new = f"{task_name}_{prompt_variant}_{model_safe}{gemini_suffix}_trial*.json"
     
     # Find all existing files matching either pattern
     pattern_old_path = os.path.join(output_dir, pattern_old)
@@ -85,7 +87,8 @@ def run_episode(
     max_steps: int = 25,
     output_dir: str = "results",
     use_memory: bool = True,
-    use_function_calling: bool = False
+    use_function_calling: bool = False,
+    use_gemini: bool = False
 ) -> Dict[str, Any]:
     """Run a single episode evaluation.
     
@@ -97,6 +100,7 @@ def run_episode(
         output_dir: Output directory for results.
         use_memory: Whether to use memory (step history) in agent prompts.
         use_function_calling: Whether to use OpenAI function calling for structured output.
+        use_gemini: Whether to use Gemini 2.5 Flash for visual UI analysis and enhanced prompting.
         
     Returns:
         Episode results dictionary.
@@ -141,7 +145,20 @@ def run_episode(
     task.initialize_task(env)
     
     # Create agent
-    agent = create_agent(env, model_name, prompt_variant, use_memory, use_function_calling)
+    if use_gemini:
+        # Import Gemini-enhanced agent
+        from gemini_enhanced_agent import create_gemini_enhanced_agent
+        agent = create_gemini_enhanced_agent(
+            env=env,
+            model_name=model_name,
+            prompt_variant=prompt_variant,
+            use_memory=use_memory,
+            use_function_calling=use_function_calling,
+            use_gemini=True
+        )
+        print(f"🔮 Using Gemini 2.5 Flash for visual UI analysis")
+    else:
+        agent = create_agent(env, model_name, prompt_variant, use_memory, use_function_calling)
     
     print(f"🎯 Goal: {task.goal}")
     
@@ -229,14 +246,23 @@ def run_episode(
             'max_steps_allowed': max_steps,
             'episode_terminated_early': step_count >= max_steps and not agent_claimed_done,
             'agent_claimed_done': agent_claimed_done,
-            'task_actually_successful': task_actually_successful
+            'task_actually_successful': task_actually_successful,
+            'use_gemini': use_gemini
         })
         
+        # Add Gemini status if Gemini agent was used
+        if use_gemini and hasattr(agent, 'get_gemini_status'):
+            results['gemini_status'] = agent.get_gemini_status()
+        
         # Save results
-        trial_number = get_next_trial_number(output_dir, task_name, prompt_variant, model_name)
+        trial_number = get_next_trial_number(output_dir, task_name, prompt_variant, model_name, use_gemini)
+        
+        # Create filename with gemini suffix if used
+        model_safe = model_name.replace('/', '_')
+        gemini_suffix = "_gemini" if use_gemini else ""
         output_file = os.path.join(
             output_dir, 
-            f"{task_name}_{prompt_variant}_{model_name.replace('/', '_')}_trial{trial_number}.json"
+            f"{task_name}_{prompt_variant}_{model_safe}{gemini_suffix}_trial{trial_number}.json"
         )
         
         with open(output_file, 'w', encoding='utf-8') as f:

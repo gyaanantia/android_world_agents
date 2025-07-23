@@ -1,6 +1,6 @@
 # AndroidWorld Enhanced T3A Agent Evaluation Framework
 
-A comprehensive evaluation framework for AndroidWorld that extends the Text-to-Action (T3A) agent with enhanced prompting capabilities including few-shot learning, self-reflection, and OpenAI function calling.
+A comprehensive evaluation framework for AndroidWorld that extends the Text-to-Action (T3A) agent with enhanced prompting capabilities including few-shot learning, self-reflection, OpenAI function calling, and **Gemini 2.5 visual prompt generation**.
 
 ## Features
 
@@ -9,6 +9,7 @@ A comprehensive evaluation framework for AndroidWorld that extends the Text-to-A
   - Base: Original T3A prompting
   - Few-shot: Learning from examples
   - Reflective: Self-reflection on failures
+- **🆕 Gemini 2.5 Visual Prompting**: AI-generated contextual prompts based on real-time UI analysis
 - **Function Calling Support**: Optional OpenAI function calling for structured output
 - **Comprehensive Evaluation**: Detailed episode recording and analysis
 - **Modular Design**: Easy to extend with new prompting strategies
@@ -87,8 +88,21 @@ For LLM evaluation, set up your API key:
 
 ```bash
 export OPENAI_API_KEY="your-api-key"
-
 ```
+
+### Gemini 2.5 Visual Prompting Setup (Optional)
+
+For enhanced visual prompting with Gemini 2.5 Flash:
+
+1. **Get Google API Key**:
+   - Visit [Google AI Studio](https://aistudio.google.com/app/apikey)
+   - Create a new API key
+
+2. **Set environment variable**:
+   ```bash
+   export GOOGLE_API_KEY="your-google-api-key"
+   ```
+
 
 ### Verify Installation
 
@@ -111,10 +125,41 @@ conda activate android_world
 ~/Library/Android/sdk/emulator/emulator -avd AndroidWorldAvd -no-snapshot -grpc 8554
 
 # Run evaluation with basic agent
-python run_evaluation.py --task "single_task_name" --prompt-variant "base"
+python run_evaluation.py --task "SystemBrightnessMax" --prompt-variant "base"
+
+# Run evaluation with Gemini 2.5 visual prompting (generates prompts dynamically)
+python run_evaluation.py --task "SystemBrightnessMax" --gemini
 
 # Run evaluation with function calling
-python run_evaluation.py --task "single_task_name" --prompt-variant "base" --function-calling
+python run_evaluation.py --task "SystemBrightnessMax" --prompt-variant "base" --function-calling
+
+# Combine Gemini with function calling
+python run_evaluation.py --task "SystemBrightnessMax" --function-calling --gemini
+```
+
+### Gemini 2.5 Visual Prompting
+
+The `--gemini` flag enables visual UI analysis using Google's Gemini 2.5 Flash model. **Note: You must use either `--prompt-variant` OR `--gemini`, not both.**
+
+```bash
+# Standard evaluation (requires --prompt-variant)
+python run_evaluation.py --task SystemBrightnessMax --prompt-variant base --num-episodes 5
+
+# Enhanced with Gemini visual analysis (no prompt variant needed)
+python run_evaluation.py --task SystemBrightnessMax --num-episodes 5 --gemini
+```
+
+**How it works:**
+1. **Screenshot Capture**: Android emulator screenshot captured before each step
+2. **Visual Analysis**: Gemini analyzes the UI and task goal  
+3. **Dynamic Prompting**: Gemini generates contextual prompts specific to the current UI state
+4. **Action Execution**: Agent returns action based on Gemini-enhanced prompt
+5. **Results Tracking**: Gemini usage tracked in evaluation results
+
+**Important**: The `--prompt-variant` and `--gemini` flags are mutually exclusive because:
+- Standard prompt variants use pre-written templates (`base`, `few-shot`, `reflective`)
+- Gemini generates prompts dynamically based on visual UI analysis
+- You must choose one prompting approach: either static templates or dynamic generation
 ```
 
 ### Function Calling Demo
@@ -149,7 +194,8 @@ NOTE: for `o-series` models, you MUST use the `--function-calling` flag to enabl
 ### Available Options
 
 - `--task`: Task name to evaluate (random if not specified)
-- `--prompt-variant`: Prompting variant (`base`, `few-shot`, `reflective`)
+- `--prompt-variant`: Prompting variant (`base`, `few-shot`, `reflective`) - **Required when not using `--gemini`**
+- `--gemini`: Enable Gemini 2.5 visual prompting (generates dynamic prompts) - **Required when not using `--prompt-variant`**
 - `--model-name`: OpenAI model to use (default: `gpt-4o-mini`)
 - `--max-steps`: Maximum steps per episode (default: 30)
 - `--num-episodes`: Number of episodes to run (default: 1)
@@ -168,6 +214,8 @@ android_world_agents/
 │   ├── agent.py              # Enhanced T3A agent with prompting variants
 │   ├── evaluator.py          # Episode evaluation and result recording
 │   ├── function_calling_llm.py # OpenAI function calling LLM wrapper
+│   ├── gemini_prompting.py   # 🆕 Gemini 2.5 visual prompt generation
+│   ├── gemini_enhanced_agent.py # 🆕 Gemini-enhanced T3A agent with seamless integration
 │   ├── main.py               # Main entry point
 │   ├── prompts.py            # Prompt management utilities
 │   ├── run_episode.py        # Episode execution logic
@@ -176,7 +224,8 @@ android_world_agents/
 ├── prompts/
 │   ├── base_prompt.txt       # Base prompting template
 │   ├── few_shot_v1.txt       # Few-shot prompting examples
-│   └── reflective_v1.txt     # Self-reflection prompting template
+│   ├── reflective_v1.txt     # Self-reflection prompting template
+│   └── gemini_base_prompt.txt # 🆕 Gemini system prompt for UI analysis
 ├── tests/                    # Test suite
 │   ├── test_agent.py         # Agent functionality tests
 │   ├── test_androidworld_compatibility.py # AndroidWorld integration tests
@@ -194,6 +243,11 @@ android_world_agents/
 ├── advanced_replay.py        # Advanced replay features
 ├── batch_analysis.py         # Batch episode analysis
 ├── demo_function_calling.py  # Function calling demonstration
+├── demo_gemini_prompting.py  # 🆕 Gemini prompting demonstration
+├── demo_gemini_agent.py      # 🆕 Gemini-enhanced agent demonstration
+├── evaluate_with_gemini.py   # 🆕 AndroidWorld evaluation with Gemini
+├── evaluate_with_gemini_integration.py # 🆕 Full Gemini integration evaluation
+├── test_gemini_integration.py # 🆕 Integration testing for Gemini functionality
 ├── replay_episode.py         # Episode replay system
 ├── fix_init_files.sh         # Script to create missing __init__.py files
 ├── pyproject.toml            # Package configuration
@@ -201,6 +255,18 @@ android_world_agents/
 ├── run_evaluation.py         # Main launcher script
 ├── setup.sh                  # Automated setup script
 ├── verify_framework.py       # Framework verification script
+├── GEMINI_README.md          # 🆕 Complete Gemini documentation
+└── README.md                 # This file
+```
+├── evaluate_with_gemini.py   # 🆕 AndroidWorld evaluation with Gemini
+├── replay_episode.py         # Episode replay system
+├── fix_init_files.sh         # Script to create missing __init__.py files
+├── pyproject.toml            # Package configuration
+├── run_tests.py              # Test runner script
+├── run_evaluation.py         # Main launcher script
+├── setup.sh                  # Automated setup script
+├── verify_framework.py       # Framework verification script
+├── GEMINI_README.md          # 🆕 Complete Gemini documentation
 └── README.md                 # This file
 ```
 
@@ -226,6 +292,186 @@ android_world_agents/
 - Uses OpenAI function calling for structured JSON output
 - Improved action parsing and validation
 - Compatible with all existing agent variants
+
+## 🆕 Gemini 2.5 Visual Prompt Generation
+
+This framework now includes cutting-edge visual prompt generation using Google's Gemini 2.5 model. Instead of using static prompts, the system can analyze Android UI screenshots in real-time and generate contextual, dynamic prompts tailored to the current interface state.
+
+### Key Features
+
+- **🔍 Visual UI Analysis**: Gemini 2.5 analyzes Android screenshots to understand current interface
+- **🎯 Context-Aware Prompting**: Generates prompts specific to visible UI elements and current state
+- **🤖 Agent-Optimized**: Creates prompts specifically designed for AndroidWorld agents
+- **� Seamless Integration**: Drop-in replacement for standard agents with graceful fallback
+- **�📊 Performance Comparison**: Compare standard vs Gemini-enhanced prompting approaches
+- **💪 Full Compatibility**: Works with all existing prompt variants and function calling
+
+### Quick Start with Gemini
+
+#### 1. Setup Google API Key
+```bash
+export GOOGLE_API_KEY="your-google-api-key"
+```
+
+#### 2. Install Gemini Dependencies
+```bash
+pip install google-generativeai pillow
+```
+
+#### 3. Run Gemini Prompting Demo
+```bash
+# Interactive demo - enter goals and see generated prompts
+python demo_gemini_prompting.py --mode interactive
+
+# Test with sample data
+python demo_gemini_prompting.py --mode sample
+
+# Analyze a real screenshot
+python demo_gemini_prompting.py --mode screenshot --screenshot path/to/android_screenshot.png --goal "Turn on Wi-Fi"
+```
+
+#### 4. Run Gemini-Enhanced Agent Demo
+```bash
+# Run agent demo with Gemini visual analysis
+python demo_gemini_agent.py --task "Navigate to settings and adjust brightness"
+
+# Interactive demo to customize settings
+python demo_gemini_agent.py --interactive
+
+# Compare with standard agent
+python demo_gemini_agent.py --no-gemini --task "Navigate to settings"
+```
+
+#### 5. Evaluate with Gemini Integration
+```bash
+# Single task with Gemini-enhanced agent
+python evaluate_with_gemini_integration.py --tasks "SystemBrightnessMax" --agent-model "gpt-4o-mini"
+
+# Multiple tasks with performance comparison
+python evaluate_with_gemini_integration.py --tasks "SystemBrightnessMax,FilesDeleteFile,TasksHighPriorityTasks" --max-steps 30
+
+# Standard evaluation for comparison
+python evaluate_with_gemini_integration.py --tasks "SystemBrightnessMax" --no-gemini
+```
+
+#### 6. Test Integration
+```bash
+# Verify everything works correctly
+python test_gemini_integration.py
+```
+
+### How It Works
+
+1. **Screenshot Analysis**: Gemini 2.5 receives the current Android UI screenshot
+2. **Context Understanding**: The model analyzes visible elements, current app, and interface state  
+3. **Task Integration**: Combines UI analysis with the specific task goal
+4. **Prompt Generation**: Creates a tailored prompt that guides the agent to complete the task
+
+### Gemini Integration Architecture
+
+The Gemini integration is designed for seamless compatibility with existing AndroidWorld agents:
+
+#### Core Components
+
+1. **`GeminiPromptGenerator`** (`src/gemini_prompting.py`)
+   - Handles communication with Gemini 2.5 Flash model
+   - Processes screenshots and generates contextual prompts
+   - Includes safety checks and error handling
+
+2. **`GeminiEnhancedT3A`** (`src/gemini_enhanced_agent.py`)
+   - Extends existing Enhanced T3A agent
+   - Optionally uses Gemini for visual analysis
+   - Gracefully falls back to standard prompting if Gemini fails
+   - Maintains full compatibility with all existing features
+
+3. **Integration Functions**
+   - `create_gemini_enhanced_agent()`: Factory for Gemini-enabled agents
+   - `create_standard_agent_with_gemini_fallback()`: Automatic fallback logic
+   - Status tracking and usage statistics
+
+#### Smart Fallback System
+
+The integration includes multiple layers of fallback to ensure reliability:
+
+```python
+# Priority order for prompt generation:
+1. Gemini 2.5 visual analysis (if enabled and working)
+2. Standard enhanced prompting (few-shot, reflective, etc.)
+3. Base AndroidWorld prompting (ultimate fallback)
+```
+
+#### Usage in Your Code
+
+```python
+from src.gemini_enhanced_agent import create_gemini_enhanced_agent
+
+# Create agent with Gemini integration
+agent = create_gemini_enhanced_agent(
+    env=env,
+    model_name="gpt-4o-mini",
+    prompt_variant="base",           # Works with any variant
+    use_function_calling=True,       # Compatible with function calling
+    use_gemini=True,                 # Enable Gemini visual analysis
+    gemini_model="gemini-2.5-flash"
+)
+
+# Check if Gemini is working
+status = agent.get_gemini_status()
+print(f"Gemini enabled: {status['gemini_enabled']}")
+
+# Use exactly like any other agent
+result = agent.step("Turn on Wi-Fi")
+```
+
+#### Performance Monitoring
+
+The enhanced agents track Gemini usage automatically:
+
+```python
+# After evaluation, check usage statistics
+step_data = agent.history[-1]  # Last step
+gemini_used = step_data.get('used_gemini', False)
+print(f"Gemini was used: {gemini_used}")
+```
+2. **Context Understanding**: The model analyzes visible elements, current app, and interface state
+3. **Task Integration**: Combines UI analysis with the specific task goal
+4. **Prompt Generation**: Creates a tailored prompt that guides the agent to complete the task
+
+### Example Output
+
+**Input**: Screenshot of Android Settings + Goal: "Turn on Wi-Fi"
+
+**Gemini Analysis**:
+```
+The screenshot shows the Android Settings app with Wi-Fi option visible. 
+The Wi-Fi toggle appears to be in the "off" state.
+```
+
+**Generated Agent Prompt**:
+```
+Your task is to turn on Wi-Fi. You can see the Settings screen is already open. 
+Look for the "Wi-Fi" option in the settings list - it should be one of the top items. 
+Next to the Wi-Fi text, there should be a toggle switch. If the switch appears to be 
+in the "off" position, tap on it to enable Wi-Fi.
+```
+
+### Troubleshooting
+
+**Common Issues:**
+
+1. **API Key Not Found**: Set `GOOGLE_API_KEY` environment variable
+2. **Connection Failed**: Check internet connection and verify API key is valid
+3. **Empty Responses**: Verify image contains visible content, try different temperature
+4. **Import Errors**: Run `pip install google-generativeai pillow`
+
+**Debug Mode:**
+```python
+import logging
+logging.basicConfig(level=logging.DEBUG)
+
+# Enable verbose logging for troubleshooting
+generator = create_gemini_generator()
+```
 
 ## Prompting System
 
