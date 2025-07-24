@@ -11,6 +11,7 @@ A comprehensive evaluation framework for AndroidWorld that extends the Text-to-A
   - Reflective: Self-reflection on failures
 - **🆕 Gemini 2.5 Visual Prompting**: AI-generated contextual prompts based on real-time UI analysis
 - **🆕 Text2Grad Integration**: Gradient-based feedback processing on Gemini visual analysis 
+- **🆕 Emulator Snapshot System**: Save and restore Android emulator states for debugging and rollback functionality
 - **Function Calling Support**: Optional OpenAI function calling for structured output
 - **Comprehensive Evaluation**: Detailed episode recording and analysis
 - **Modular Design**: Easy to extend with new prompting strategies
