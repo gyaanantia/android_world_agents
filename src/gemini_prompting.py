@@ -18,6 +18,8 @@ from pathlib import Path
 from typing import Dict, Any, Optional, Tuple
 import numpy as np
 import logging
+import argparse
+from PIL import Image
 
 # Add project paths
 project_root = Path(__file__).parent.parent
@@ -175,8 +177,6 @@ class GeminiPromptGenerator:
         Returns:
             Base64 encoded image string.
         """
-        import io
-        import base64
         
         buffer = io.BytesIO()
         image.save(buffer, format='PNG')
@@ -406,7 +406,7 @@ def create_gemini_generator(
 
 def main():
     """CLI interface for testing the Gemini prompt generator."""
-    import argparse
+    
     
     parser = argparse.ArgumentParser(description="Test Gemini Prompt Generator")
     parser.add_argument("--test-connection", action="store_true", help="Test API connection")
@@ -433,7 +433,6 @@ def main():
             print(f"Generating prompt for goal: {args.goal}")
             
             # Load screenshot
-            from PIL import Image
             image = Image.open(args.screenshot)
             screenshot = np.array(image)
             

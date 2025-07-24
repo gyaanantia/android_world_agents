@@ -77,23 +77,81 @@ create_init_files "android_world"
 echo "Installing Android World in editable mode..."
 pip install -e android_world/
 
+# Clone Text2Grad from GitHub
+echo "Cloning Text2Grad from GitHub..."
+if [ -d "Text2Grad" ]; then
+    echo "  Text2Grad directory already exists, pulling latest changes..."
+    cd Text2Grad
+    git pull
+    cd ..
+else
+    git clone https://github.com/EdWangLoDaSc/Text2Grad-Reinforcement-Learning-from-Natural-Language-Feedback.git Text2Grad
+fi
+
 # Install this project and its dependencies
 echo "Installing Android World Agents package..."
 pip install -e .
+
+# Install Text2Grad dependencies (macOS compatible)
+echo "Installing Text2Grad dependencies..."
+
+# Install PyTorch with CPU/MPS support for macOS (no CUDA)
+echo "  Installing PyTorch with macOS support (CPU/MPS)..."
+pip install torch==2.2.2 torchvision==0.17.2 torchaudio==2.2.2
+
+# Fix NumPy compatibility with PyTorch 2.2.2
+echo "  Ensuring NumPy compatibility..."
+pip install "numpy<2"
+
+# Install Text2Grad-specific packages
+echo "  Installing Text2Grad ML packages..."
+pip install trl==0.10.1
+pip install scikit-learn pandas
+pip install peft --no-dependencies
+pip install transformers>=4.35.0
+pip install accelerate
+pip install bitsandbytes
+pip install rouge rouge_score
+pip install bert_score
+
+# Install evaluation packages
+echo "  Installing evaluation packages..."
+pip install --upgrade "evalplus[vllm] @ git+https://github.com/evalplus/evalplus"
+
+# Install additional utility packages
+echo "  Installing utility packages..."
+pip install wandb
+pip install huggingface_hub
+
+# Configure git credentials (optional)
+echo "Configuring git credentials..."
+git config --global credential.helper store
 
 echo ""
 echo "✅ Environment setup complete!"
 echo ""
 echo "The environment includes:"
 echo "  - Android World (editable install from GitHub)"
+echo "  - Text2Grad (cloned from GitHub)"
 echo "  - Android World Agents (enhanced T3A with prompting capabilities)"
+echo "  - Text2Grad dependencies (macOS compatible)"
+echo "  - PyTorch with CPU/MPS support"
 echo "  - All necessary __init__.py files"
 echo "  - All required dependencies"
 echo ""
 echo "To activate the environment, run:"
 echo "  conda activate android_world"
 echo ""
+echo "Optional setup commands:"
+echo "  # Set up Weights & Biases (interactive):"
+echo "  wandb login"
+echo ""
+echo "  # Set up Hugging Face access:"
+echo "  python -c \"from huggingface_hub import login; login('YOUR_HF_TOKEN')\""
+echo ""
 echo "To test the installation, run:"
 echo "  python -c \"import android_world; print('Android World installed successfully')\""
 echo "  python -c \"import android_world.agents; print('Android World agents module available')\""
 echo "  python -c \"from src.agent import EnhancedT3A; print('Enhanced T3A agent available')\""
+echo "  python -c \"import torch; print(f'PyTorch {torch.__version__} installed with device: {torch.device(\\\"mps\\\" if torch.backends.mps.is_available() else \\\"cpu\\\")}')\""
+echo "  python verify_text2grad.py  # Test Text2Grad integration"

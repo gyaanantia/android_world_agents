@@ -16,6 +16,7 @@ from android_world.task_evals import task_eval
 from agent import create_agent
 from evaluator import EpisodeEvaluator
 from utils import find_adb_directory, ensure_results_dir, suppress_grpc_logging
+from gemini_enhanced_agent import create_gemini_enhanced_agent
 
 # Suppress gRPC verbose logging before any gRPC communication
 suppress_grpc_logging()
@@ -88,7 +89,8 @@ def run_episode(
     output_dir: str = "results",
     use_memory: bool = True,
     use_function_calling: bool = False,
-    use_gemini: bool = False
+    use_gemini: bool = False,
+    use_text2grad: bool = False
 ) -> Dict[str, Any]:
     """Run a single episode evaluation.
     
@@ -101,6 +103,7 @@ def run_episode(
         use_memory: Whether to use memory (step history) in agent prompts.
         use_function_calling: Whether to use OpenAI function calling for structured output.
         use_gemini: Whether to use Gemini 2.5 Flash for visual UI analysis and enhanced prompting.
+        use_text2grad: Whether to use Text2Grad processing on Gemini output.
         
     Returns:
         Episode results dictionary.
@@ -147,16 +150,19 @@ def run_episode(
     # Create agent
     if use_gemini:
         # Import Gemini-enhanced agent
-        from gemini_enhanced_agent import create_gemini_enhanced_agent
         agent = create_gemini_enhanced_agent(
             env=env,
             model_name=model_name,
             prompt_variant=prompt_variant,
             use_memory=use_memory,
             use_function_calling=use_function_calling,
-            use_gemini=True
+            use_gemini=True,
+            use_text2grad=use_text2grad
         )
-        print(f"🔮 Using Gemini 2.5 Flash for visual UI analysis")
+        if use_text2grad:
+            print(f"🔮 Using Gemini 2.5 Flash for visual UI analysis with Text2Grad processing")
+        else:
+            print(f"🔮 Using Gemini 2.5 Flash for visual UI analysis")
     else:
         agent = create_agent(env, model_name, prompt_variant, use_memory, use_function_calling)
     

@@ -98,6 +98,12 @@ def main():
         help="Use Gemini 2.5 Flash for visual UI analysis and enhanced prompting (works with any --prompt-variant)"
     )
     
+    parser.add_argument(
+        "--text2grad",
+        action="store_true",
+        help="Enable Text2Grad processing on Gemini visual analysis output for gradient-based feedback (automatically enables --gemini)"
+    )
+    
     # Evaluation options
     parser.add_argument(
         "--num-episodes", 
@@ -107,6 +113,11 @@ def main():
     )
     
     args = parser.parse_args()
+    
+    # Auto-enable Gemini when Text2Grad is requested
+    if args.text2grad and not args.gemini:
+        args.gemini = True
+        print("ℹ️  Auto-enabling --gemini since --text2grad requires Gemini visual analysis")
     
     # Validate argument combinations - no mutual exclusivity needed anymore
     # Both --prompt-variant and --gemini can be used together
@@ -118,6 +129,19 @@ def main():
         print("  export GOOGLE_API_KEY='your-api-key-here'")
         print("Get an API key at: https://aistudio.google.com/app/apikey")
         sys.exit(1)
+    
+    # Validate Text2Grad requirements
+    if args.text2grad:
+        # Check Text2Grad dependencies
+        try:
+            import torch
+            import transformers
+            print("✅ Text2Grad dependencies available")
+        except ImportError as e:
+            print(f"❌ Text2Grad dependencies missing: {e}")
+            print("Please run: ./setup.sh")
+            print("Or install manually: pip install torch transformers trl peft")
+            sys.exit(1)
     
     # Validate environment
     if not validate_android_world_env():
@@ -138,9 +162,14 @@ def main():
     if args.gemini:
         print(f"   Prompting: Gemini-enhanced {args.prompt_variant}")
         print(f"   Visual Analysis: Enabled (Gemini 2.5 Flash)")
+        if args.text2grad:
+            print(f"   Text2Grad: Enabled (gradient-based feedback processing)")
+        else:
+            print(f"   Text2Grad: Disabled")
     else:
         print(f"   Prompting: Standard {args.prompt_variant}")
         print(f"   Visual Analysis: Disabled")
+        print(f"   Text2Grad: Disabled (requires --gemini)")
     print(f"   Model: {args.model_name}")
     print(f"   Max Steps: {args.max_steps}")
     print(f"   Episodes: {args.num_episodes}")
@@ -160,7 +189,8 @@ def main():
                 output_dir=results_dir,
                 use_memory=not args.disable_memory,
                 use_function_calling=args.function_calling,
-                use_gemini=args.gemini
+                use_gemini=args.gemini,
+                use_text2grad=args.text2grad
             )
             
             if result.get("success"):

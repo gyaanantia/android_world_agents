@@ -12,7 +12,7 @@ def test_imports():
     print("🔍 Testing module imports...")
     
     # Add src to path
-    sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'src'))
+    sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
     
     modules_to_test = [
         'src.utils',
@@ -24,16 +24,11 @@ def test_imports():
     for module_name in modules_to_test:
         try:
             spec = importlib.util.find_spec(module_name)
-            if spec is None:
-                print(f"❌ {module_name}: Module not found")
-                return False
-            else:
-                print(f"✅ {module_name}: Found")
+            assert spec is not None, f"{module_name}: Module not found"
+            print(f"✅ {module_name}: Found")
         except Exception as e:
             print(f"❌ {module_name}: Error - {e}")
-            return False
-    
-    return True
+            assert False, f"{module_name}: Error - {e}"
 
 def test_file_structure():
     """Test if all required files exist."""
@@ -62,36 +57,32 @@ def test_file_structure():
         else:
             print(f"✅ {file_path}: Found")
     
-    return len(missing_files) == 0
+    assert len(missing_files) == 0, f"Missing files: {missing_files}"
 
 def test_prompt_functionality():
     """Test if prompt loading and formatting works correctly."""
     print("\n🔤 Testing prompt functionality...")
     
     # Add src to path
-    sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'src'))
+    sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
     
     try:
         from prompts import load_prompt, get_prompt_template, format_prompt, list_available_prompts
         
         # Test listing prompts
         available_prompts = list_available_prompts()
-        if not available_prompts:
-            print("❌ No prompts found in prompts directory")
-            return False
+        assert available_prompts, "No prompts found in prompts directory"
         print(f"✅ Found {len(available_prompts)} prompt files")
         
         # Test loading specific prompts
         for prompt_variant in ["base", "few-shot", "reflective"]:
             try:
                 prompt = get_prompt_template(prompt_variant)
-                if not prompt:
-                    print(f"❌ {prompt_variant} prompt is empty")
-                    return False
+                assert prompt, f"{prompt_variant} prompt is empty"
                 print(f"✅ {prompt_variant} prompt loaded successfully")
             except Exception as e:
                 print(f"❌ {prompt_variant} prompt loading failed: {e}")
-                return False
+                assert False, f"{prompt_variant} prompt loading failed: {e}"
         
         # Test prompt formatting
         try:
@@ -100,19 +91,15 @@ def test_prompt_functionality():
                                     goal="Test goal", 
                                     ui_elements="Test UI", 
                                     memory="Test memory")
-            if "{goal}" in formatted or "{ui_elements}" in formatted or "{memory}" in formatted:
-                print("❌ Prompt formatting failed - variables not substituted")
-                return False
+            assert "{goal}" not in formatted and "{ui_elements}" not in formatted and "{memory}" not in formatted, "Prompt formatting failed - variables not substituted"
             print("✅ Prompt formatting works correctly")
         except Exception as e:
             print(f"❌ Prompt formatting failed: {e}")
-            return False
-        
-        return True
+            assert False, f"Prompt formatting failed: {e}"
         
     except Exception as e:
         print(f"❌ Prompt functionality test failed: {e}")
-        return False
+        assert False, f"Prompt functionality test failed: {e}"
 
 
 def test_dependencies():
@@ -120,10 +107,7 @@ def test_dependencies():
     print("\n📦 Testing dependencies...")
     
     # Check if pyproject.toml exists
-    if not os.path.exists('pyproject.toml'):
-        print("❌ pyproject.toml not found")
-        return False
-    
+    assert os.path.exists('pyproject.toml'), "pyproject.toml not found"
     print("✅ pyproject.toml found")
     
     # Test basic imports (skip AndroidWorld for now)
@@ -135,9 +119,7 @@ def test_dependencies():
             print(f"✅ {dep}: Available")
         except ImportError:
             print(f"❌ {dep}: Missing")
-            return False
-    
-    return True
+            assert False, f"{dep}: Missing"
 
 def test_execution_permissions():
     """Test if scripts have execution permissions."""
@@ -146,13 +128,8 @@ def test_execution_permissions():
     scripts = ['run_evaluation.py']
     
     for script in scripts:
-        if os.access(script, os.X_OK):
-            print(f"✅ {script}: Executable")
-        else:
-            print(f"❌ {script}: Not executable")
-            return False
-    
-    return True
+        assert os.access(script, os.X_OK), f"{script}: Not executable"
+        print(f"✅ {script}: Executable")
 
 def main():
     """Run all tests."""
@@ -187,10 +164,11 @@ def main():
     results = []
     for test_name, test_func in tests:
         try:
-            result = test_func()
-            results.append((test_name, result))
+            test_func()
+            results.append((test_name, True))
+            print(f"✅ {test_name}: PASSED")
         except Exception as e:
-            print(f"❌ {test_name}: Error - {e}")
+            print(f"❌ {test_name}: FAILED - {e}")
             results.append((test_name, False))
     
     # Summary

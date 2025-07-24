@@ -22,7 +22,7 @@ dependencies = [
     "google-generativeai>=0.3.0",
     
     # Data analysis and visualization
-    "numpy>=1.24.0",
+    "numpy>=1.24.0,<2.0.0",
     "pandas>=1.5.0",
     "matplotlib>=3.6.0",
     "seaborn>=0.12.0",
@@ -39,6 +39,21 @@ dependencies = [
     
     # Pin jsonschema to match AndroidWorld requirements
     "jsonschema==4.17.3",
+    
+    # Text2Grad ML dependencies
+    "torch>=2.0.0,<2.3.0",
+    "torchvision",
+    "torchaudio", 
+    "transformers>=4.35.0",
+    "accelerate",
+    "scikit-learn",
+    "trl>=0.10.0,<0.12.0",
+    "peft",
+    "bitsandbytes",
+    "rouge-score",
+    "bert-score",
+    "wandb",
+    "huggingface-hub",
     
     # Note: Jupyter removed due to jsonschema conflict
     # Install manually if needed: pip install jupyter

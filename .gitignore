@@ -49,6 +49,7 @@ Thumbs.db
 
 # Project specific
 android_world/
+Text2Grad/
 episode_*.json
 *.log
 

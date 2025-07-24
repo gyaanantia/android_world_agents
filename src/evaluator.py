@@ -88,7 +88,6 @@ class EpisodeEvaluator:
             else:
                 # For other types, try JSON serialization test
                 try:
-                    import json
                     json.dumps(value)
                     serialized[key] = value
                 except (TypeError, ValueError):
@@ -114,7 +113,6 @@ class EpisodeEvaluator:
                    if not k.startswith('_')}
         else:
             try:
-                import json
                 json.dumps(value)
                 return value
             except (TypeError, ValueError):
@@ -125,7 +123,6 @@ class EpisodeEvaluator:
         
         Excludes screenshot pixels to avoid huge JSON files.
         """
-        import numpy as np
         
         def _serialize_value(value, key=None):
             """Recursively serialize values, handling numpy arrays."""
@@ -162,7 +159,6 @@ class EpisodeEvaluator:
                 # For primitive types or unknown objects, try to convert to string
                 try:
                     # Test if it's JSON serializable
-                    import json
                     json.dumps(value)
                     return value
                 except (TypeError, ValueError):

@@ -20,6 +20,7 @@ from android_world.env import interface, json_action
 
 from prompts import get_prompt_template, format_prompt
 from function_calling_llm import create_llm
+import json
 
 
 def _generate_seeact_ui_elements_description(
@@ -179,7 +180,6 @@ class EnhancedT3A(t3a.T3A):
             else:
                 # Fallback: try parsing as direct JSON (shouldn't be needed with proper function calling)
                 try:
-                    import json
                     json_data = json.loads(output.strip())
                     if 'action_type' in json_data:
                         reason = json_data.get('text', 'Direct JSON action')
