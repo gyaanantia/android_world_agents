@@ -99,9 +99,9 @@ def main():
     )
     
     parser.add_argument(
-        "--text2grad",
+        "--textgrad",
         action="store_true",
-        help="Enable Text2Grad processing on Gemini visual analysis output for gradient-based feedback (automatically enables --gemini)"
+        help="Enable TextGrad optimization on Gemini visual analysis output (automatically enables --gemini)"
     )
     
     # Evaluation options
@@ -114,10 +114,10 @@ def main():
     
     args = parser.parse_args()
     
-    # Auto-enable Gemini when Text2Grad is requested
-    if args.text2grad and not args.gemini:
+    # Auto-enable Gemini when TextGrad is requested
+    if args.textgrad and not args.gemini:
         args.gemini = True
-        print("ℹ️  Auto-enabling --gemini since --text2grad requires Gemini visual analysis")
+        print("ℹ️  Auto-enabling --gemini since --textgrad requires Gemini visual analysis")
     
     # Validate argument combinations - no mutual exclusivity needed anymore
     # Both --prompt-variant and --gemini can be used together
@@ -130,17 +130,15 @@ def main():
         print("Get an API key at: https://aistudio.google.com/app/apikey")
         sys.exit(1)
     
-    # Validate Text2Grad requirements
-    if args.text2grad:
-        # Check Text2Grad dependencies
+    # Validate TextGrad requirements
+    if args.textgrad:
+        # Check TextGrad dependencies
         try:
-            import torch
-            import transformers
-            print("✅ Text2Grad dependencies available")
+            import textgrad
+            print("✅ TextGrad dependencies available")
         except ImportError as e:
-            print(f"❌ Text2Grad dependencies missing: {e}")
-            print("Please run: ./setup.sh")
-            print("Or install manually: pip install torch transformers trl peft")
+            print(f"❌ TextGrad dependencies missing: {e}")
+            print("Please install TextGrad: pip install textgrad")
             sys.exit(1)
     
     # Validate environment
@@ -162,14 +160,14 @@ def main():
     if args.gemini:
         print(f"   Prompting: Gemini-enhanced {args.prompt_variant}")
         print(f"   Visual Analysis: Enabled (Gemini 2.5 Flash)")
-        if args.text2grad:
-            print(f"   Text2Grad: Enabled (gradient-based feedback processing)")
+        if args.textgrad:
+            print(f"   TextGrad: Enabled (gradient-based optimization)")
         else:
-            print(f"   Text2Grad: Disabled")
+            print(f"   TextGrad: Disabled")
     else:
         print(f"   Prompting: Standard {args.prompt_variant}")
         print(f"   Visual Analysis: Disabled")
-        print(f"   Text2Grad: Disabled (requires --gemini)")
+        print(f"   TextGrad: Disabled (requires --gemini)")
     print(f"   Model: {args.model_name}")
     print(f"   Max Steps: {args.max_steps}")
     print(f"   Episodes: {args.num_episodes}")
@@ -190,7 +188,7 @@ def main():
                 use_memory=not args.disable_memory,
                 use_function_calling=args.function_calling,
                 use_gemini=args.gemini,
-                use_text2grad=args.text2grad
+                use_textgrad=args.textgrad
             )
             
             if result.get("success"):

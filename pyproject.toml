@@ -40,20 +40,12 @@ dependencies = [
     # Pin jsonschema to match AndroidWorld requirements
     "jsonschema==4.17.3",
     
-    # Text2Grad ML dependencies
+    # TextGrad dependency (for optimization)
+    "textgrad",
+    
+    # ML dependencies (only what's needed for TextGrad)
     "torch>=2.0.0,<2.3.0",
-    "torchvision",
-    "torchaudio", 
     "transformers>=4.35.0",
-    "accelerate",
-    "scikit-learn",
-    "trl>=0.10.0,<0.12.0",
-    "peft",
-    "bitsandbytes",
-    "rouge-score",
-    "bert-score",
-    "wandb",
-    "huggingface-hub",
     
     # Note: Jupyter removed due to jsonschema conflict
     # Install manually if needed: pip install jupyter

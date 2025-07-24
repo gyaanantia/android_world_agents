@@ -16,13 +16,13 @@ Key Features:
 import os
 import json
 import numpy as np
-from typing import Optional, Dict, Any, List, Tuple
+from typing import Optional, Dict, Any, List, Tuple, Tuple
 from PIL import Image
 
 from src import prompts
 from src.prompts import get_gemini_enhanced_prompt, format_prompt
 from src.function_calling_llm import create_llm
-from src.text2grad_integration import create_text2grad_processor
+from textgrad_opt import create_textgrad_optimizer
 from android_world.agents.m3a import _summarize_prompt
 from src.agent import (
     EnhancedT3A, 
@@ -65,7 +65,7 @@ class GeminiEnhancedT3A(EnhancedT3A):
         use_memory: bool = True,
         use_function_calling: bool = False,
         use_gemini: bool = True,
-        use_text2grad: bool = False,
+        use_textgrad: bool = False,
         gemini_model: str = "gemini-2.5-flash",
         name: str = "GeminiEnhancedT3A",
     ):
@@ -78,16 +78,16 @@ class GeminiEnhancedT3A(EnhancedT3A):
             use_memory: Whether to use memory (step history) in prompts.
             use_function_calling: Whether to use OpenAI function calling for structured output.
             use_gemini: Whether to use Gemini for visual UI analysis (if available).
-            use_text2grad: Whether to use Text2Grad processing on Gemini output.
+            use_textgrad: Whether to use TextGrad optimization on Gemini output.
             gemini_model: The Gemini model to use for visual analysis.
             name: The agent name.
         """
         super().__init__(env, llm, prompt_variant, use_memory, use_function_calling, name)
         
         self.use_gemini = use_gemini and GEMINI_AVAILABLE
-        self.use_text2grad = use_text2grad and use_gemini  # Text2Grad requires Gemini
+        self.use_textgrad = use_textgrad and use_gemini  # TextGrad requires Gemini
         self.gemini_generator = None
-        self.text2grad_processor = None
+        self.textgrad_optimizer = None
         
         # Initialize Gemini generator if requested and available
         if self.use_gemini:
@@ -101,32 +101,31 @@ class GeminiEnhancedT3A(EnhancedT3A):
                 if self.gemini_generator is None:
                     print("⚠️ Gemini dependencies not available, falling back to standard prompting")
                     self.use_gemini = False
-                    self.use_text2grad = False
+                    self.use_textgrad = False
                 else:
                     print(f"✅ Gemini {gemini_model} initialized for visual UI analysis")
                     
-                    # Initialize Text2Grad processor if requested
-                    if self.use_text2grad:
+                    # Initialize TextGrad optimizer if requested
+                    if self.use_textgrad:
                         try:
-                            
-                            self.text2grad_processor = create_text2grad_processor(enabled=True)
-                            if self.text2grad_processor.is_available():
-                                print("✅ Text2Grad processor initialized for gradient-based feedback")
+                            self.textgrad_optimizer = create_textgrad_optimizer(enabled=True)
+                            if self.textgrad_optimizer.is_available():
+                                print("✅ TextGrad optimizer initialized for gradient-based optimization")
                             else:
-                                print("⚠️ Text2Grad initialization failed, using standard Gemini analysis")
-                                self.use_text2grad = False
+                                print("⚠️ TextGrad initialization failed, using standard Gemini analysis")
+                                self.use_textgrad = False
                         except ImportError:
-                            print("⚠️ Text2Grad integration module not available")
-                            self.use_text2grad = False
+                            print("⚠️ TextGrad module not available")
+                            self.use_textgrad = False
                         except Exception as e:
-                            print(f"⚠️ Failed to initialize Text2Grad: {e}")
-                            self.use_text2grad = False
+                            print(f"⚠️ Failed to initialize TextGrad: {e}")
+                            self.use_textgrad = False
                             
             except Exception as e:
                 print(f"⚠️ Failed to initialize Gemini: {e}")
                 print("⚠️ Falling back to standard prompting")
                 self.use_gemini = False
-                self.use_text2grad = False
+                self.use_textgrad = False
                 self.gemini_generator = None
         else:
             if not GEMINI_AVAILABLE:
@@ -163,7 +162,7 @@ class GeminiEnhancedT3A(EnhancedT3A):
         screenshot: np.ndarray, 
         ui_elements_description: str,
         memory: Optional[List[str]] = None
-    ) -> str:
+    ) -> Tuple[str, bool]:
         """Generate an enhanced prompt using Gemini visual analysis.
         
         Args:
@@ -173,11 +172,12 @@ class GeminiEnhancedT3A(EnhancedT3A):
             memory: Previous step memory.
             
         Returns:
-            Enhanced prompt string, or standard prompt if Gemini fails.
+            Tuple of (enhanced prompt string, whether TextGrad was used).
+            Returns (standard prompt, False) if Gemini fails.
         """
         if not self.use_gemini or not self.gemini_generator:
             # Fallback to standard prompting
-            return self._get_action_prompt(goal, ui_elements_description, memory)
+            return self._get_action_prompt(goal, ui_elements_description, memory), False
         
         try:
             # Generate Gemini visual analysis
@@ -192,23 +192,27 @@ class GeminiEnhancedT3A(EnhancedT3A):
                 raw_response = gemini_result.get('raw_response', '')
                 
                 if raw_response and raw_response.strip():
-                    # Apply Text2Grad processing if enabled
+                    # Apply TextGrad optimization if enabled
                     processed_analysis = raw_response.strip()
-                    if self.use_text2grad and self.text2grad_processor:
+                    textgrad_used = False
+                    if self.use_textgrad and self.textgrad_optimizer:
                         try:
-                            task_context = {
-                                'goal': goal,
-                                'ui_elements': ui_elements_description,
-                                'memory': memory
-                            }
-                            processed_analysis = self.text2grad_processor.process_gemini_output(
-                                raw_response.strip(), 
-                                task_context
+                            processed_analysis = self.textgrad_optimizer.optimize_visual_analysis(
+                                gemini_analysis=raw_response.strip(),
+                                task_goal=goal,
+                                ui_elements=ui_elements_description,
+                                feedback_context={
+                                    'goal': goal,
+                                    'ui_elements': ui_elements_description,
+                                    'memory': memory
+                                }
                             )
-                            print("✅ Applied Text2Grad processing to Gemini analysis")
+                            print("✅ Applied TextGrad optimization to Gemini analysis")
+                            textgrad_used = True
                         except Exception as e:
-                            print(f"⚠️ Text2Grad processing failed: {e}, using original analysis")
+                            print(f"⚠️ TextGrad optimization failed: {e}, using original analysis")
                             processed_analysis = raw_response.strip()
+                            textgrad_used = False
                     
                     # Use the Gemini-enhanced prompt template
                     gemini_prompt_template = prompts.get_gemini_enhanced_prompt(self.prompt_variant)
@@ -230,24 +234,24 @@ class GeminiEnhancedT3A(EnhancedT3A):
                         gemini_analysis=processed_analysis
                     )
                     
-                    if self.use_text2grad:
-                        print("✅ Using Gemini-enhanced prompt with Text2Grad processing")
+                    if textgrad_used:
+                        print("✅ Using Gemini-enhanced prompt with TextGrad optimization")
                     else:
                         print("✅ Using Gemini-enhanced prompt")
-                    return enhanced_prompt
+                    return enhanced_prompt, textgrad_used
                 else:
                     print("⚠️ Gemini returned empty analysis, using standard prompting")
-                    return self._get_action_prompt(goal, ui_elements_description, memory)
+                    return self._get_action_prompt(goal, ui_elements_description, memory), False
             else:
                 error_msg = gemini_result.get('error', 'Unknown error') if gemini_result else 'No result returned'
                 print(f"⚠️ Gemini visual analysis failed: {error_msg}")
                 print("⚠️ Falling back to standard prompting")
-                return self._get_action_prompt(goal, ui_elements_description, memory)
+                return self._get_action_prompt(goal, ui_elements_description, memory), False
                 
         except Exception as e:
             print(f"⚠️ Gemini enhanced prompting failed: {e}")
             print("⚠️ Falling back to standard prompting")
-            return self._get_action_prompt(goal, ui_elements_description, memory)
+            return self._get_action_prompt(goal, ui_elements_description, memory), False
     
     def step(self, goal: str):
         """Override step method to optionally use Gemini-enhanced prompting.
@@ -275,6 +279,7 @@ class GeminiEnhancedT3A(EnhancedT3A):
             'summary': None,
             'summary_raw_response': None,
             'used_gemini': False,  # Track whether Gemini was used
+            'used_textgrad': False,  # Track whether TextGrad optimization was used
         }
         
         # Get current state
@@ -299,13 +304,14 @@ class GeminiEnhancedT3A(EnhancedT3A):
         
         # Use Gemini-enhanced prompt generation if available
         if self.use_gemini and self.gemini_generator:
-            action_prompt = self._get_gemini_enhanced_prompt(
+            action_prompt, textgrad_used = self._get_gemini_enhanced_prompt(
                 goal,
                 screenshot,
                 before_element_list,
                 memory
             )
             step_data['used_gemini'] = True
+            step_data['used_textgrad'] = textgrad_used
         else:
             # Use standard prompt generation
             action_prompt = self._get_action_prompt(
@@ -314,6 +320,7 @@ class GeminiEnhancedT3A(EnhancedT3A):
                 memory
             )
             step_data['used_gemini'] = False
+            step_data['used_textgrad'] = False
         
         # Save state data
         step_data['before_screenshot'] = screenshot.copy()
@@ -484,7 +491,7 @@ def create_gemini_enhanced_agent(
     use_memory: bool = True,
     use_function_calling: bool = False,
     use_gemini: bool = True,
-    use_text2grad: bool = False,
+    use_textgrad: bool = False,
     gemini_model: str = "gemini-2.5-flash"
 ) -> GeminiEnhancedT3A:
     """Factory function to create a Gemini-enhanced T3A agent.
@@ -496,7 +503,7 @@ def create_gemini_enhanced_agent(
         use_memory: Whether to use memory (step history) in prompts.
         use_function_calling: Whether to use OpenAI function calling for structured output.
         use_gemini: Whether to use Gemini for visual UI analysis (if available).
-        use_text2grad: Whether to use Text2Grad processing on Gemini output.
+        use_textgrad: Whether to use TextGrad optimization on Gemini output.
         gemini_model: The Gemini model to use for visual analysis.
         
     Returns:
@@ -515,7 +522,7 @@ def create_gemini_enhanced_agent(
         use_memory=use_memory,
         use_function_calling=use_function_calling,
         use_gemini=use_gemini,
-        use_text2grad=use_text2grad,
+        use_textgrad=use_textgrad,
         gemini_model=gemini_model
     )
 

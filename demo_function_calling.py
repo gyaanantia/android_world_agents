@@ -16,7 +16,7 @@ suppress_grpc_logging()
 
 from function_calling_llm import create_llm
 from android_world.agents import infer
-from test_utils import confirm_api_usage, check_api_key
+from tests.test_utils import confirm_api_usage, check_api_key
 
 
 def demo_comparison():

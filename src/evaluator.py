@@ -200,6 +200,15 @@ class EpisodeEvaluator:
                 step_time = step.timestamp - self.steps[i-1].timestamp
             step_timings.append(step_time)
         
+        # Calculate Gemini and TextGrad usage statistics
+        gemini_usage_count = 0
+        textgrad_usage_count = 0
+        for step in self.steps:
+            if step.agent_data.get('used_gemini', False):
+                gemini_usage_count += 1
+            if step.agent_data.get('used_textgrad', False):
+                textgrad_usage_count += 1
+        
         results = {
             # Basic episode info
             "task_name": self.task_name,
@@ -240,7 +249,13 @@ class EpisodeEvaluator:
             "total_ui_elements": sum(
                 len(step.state.get("ui_elements", []))
                 for step in self.steps
-            )
+            ),
+            
+            # Usage statistics
+            "gemini_usage_count": gemini_usage_count,
+            "textgrad_usage_count": textgrad_usage_count,
+            "gemini_usage_percentage": round(100 * gemini_usage_count / max(1, steps_taken), 1),
+            "textgrad_usage_percentage": round(100 * textgrad_usage_count / max(1, steps_taken), 1)
         }
         
         return results

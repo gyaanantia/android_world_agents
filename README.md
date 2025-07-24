@@ -1,6 +1,6 @@
 # AndroidWorld Enhanced T3A Agent Evaluation Framework
 
-A comprehensive evaluation framework for AndroidWorld that extends the Text-to-Action (T3A) agent with enhanced prompting capabilities including few-shot learning, self-reflection, OpenAI function calling, and **Gemini 2.5 visual prompt generation**.
+A comprehensive evaluation framework for AndroidWorld that extends the Text-to-Action (T3A) agent with enhanced prompting capabilities including few-shot learning, self-reflection, OpenAI function calling, and **Gemini 2.5 visual prompt generation with TextGrad optimization**.
 
 ## Features
 
@@ -10,7 +10,7 @@ A comprehensive evaluation framework for AndroidWorld that extends the Text-to-A
   - Few-shot: Learning from examples
   - Reflective: Self-reflection on failures
 - **🆕 Gemini 2.5 Visual Prompting**: AI-generated contextual prompts based on real-time UI analysis
-- **🆕 Text2Grad Integration**: Gradient-based feedback processing on Gemini visual analysis 
+- **🆕 TextGrad Optimization**: Gradient-based optimization to improve Gemini's visual analysis quality for better agent understanding
 - **🆕 Emulator Snapshot System**: Save and restore Android emulator states for debugging and rollback functionality
 - **Function Calling Support**: Optional OpenAI function calling for structured output
 - **Comprehensive Evaluation**: Detailed episode recording and analysis
@@ -129,39 +129,51 @@ conda activate android_world
 # Run evaluation with basic agent
 python run_evaluation.py --task "SystemBrightnessMax" --prompt-variant "base"
 
-# Run evaluation with Gemini 2.5 visual prompting (generates prompts dynamically)
-python run_evaluation.py --task "SystemBrightnessMax" --gemini
+# Run evaluation with Gemini 2.5 visual prompting (enhances base prompting)
+python run_evaluation.py --task "SystemBrightnessMax" --prompt-variant "base" --gemini
+
+# Run evaluation with Gemini and TextGrad optimization (best performance)
+python run_evaluation.py --task "SystemBrightnessMax" --prompt-variant "base" --gemini --textgrad
 
 # Run evaluation with function calling
 python run_evaluation.py --task "SystemBrightnessMax" --prompt-variant "base" --function-calling
 
-# Combine Gemini with function calling
-python run_evaluation.py --task "SystemBrightnessMax" --function-calling --gemini
+# Combine all features: few-shot prompting + Gemini + TextGrad + function calling
+python run_evaluation.py --task SystemBrightnessMax --prompt-variant few-shot --gemini --textgrad --function-calling
 ```
 
-### Gemini 2.5 Visual Prompting
+### Gemini 2.5 Visual Prompting with TextGrad Optimization
 
-The `--gemini` flag enables visual UI analysis using Google's Gemini 2.5 Flash model. **Note: You must use either `--prompt-variant` OR `--gemini`, not both.**
+The `--gemini` flag enables visual UI analysis using Google's Gemini 2.5 Flash model. The `--textgrad` flag further optimizes Gemini's analysis using gradient-based optimization for improved agent understanding. Both flags work with any `--prompt-variant` to provide enhanced versions of your chosen prompting strategy.
 
 ```bash
-# Standard evaluation (requires --prompt-variant)
+# Standard evaluation with different prompt variants
 python run_evaluation.py --task SystemBrightnessMax --prompt-variant base --num-episodes 5
+python run_evaluation.py --task SystemBrightnessMax --prompt-variant few-shot --num-episodes 5
+python run_evaluation.py --task SystemBrightnessMax --prompt-variant reflective --num-episodes 5
 
-# Enhanced with Gemini visual analysis (no prompt variant needed)
-python run_evaluation.py --task SystemBrightnessMax --num-episodes 5 --gemini
+# Enhanced with Gemini visual analysis (works with any prompt variant)
+python run_evaluation.py --task SystemBrightnessMax --prompt-variant base --gemini --num-episodes 5
+python run_evaluation.py --task SystemBrightnessMax --prompt-variant few-shot --gemini --num-episodes 5
+
+# Enhanced with Gemini and TextGrad optimization for best performance
+python run_evaluation.py --task SystemBrightnessMax --prompt-variant base --gemini --textgrad --num-episodes 5
+python run_evaluation.py --task SystemBrightnessMax --prompt-variant reflective --gemini --textgrad --num-episodes 5
 ```
 
 **How it works:**
 1. **Screenshot Capture**: Android emulator screenshot captured before each step
 2. **Visual Analysis**: Gemini analyzes the UI and task goal  
-3. **Dynamic Prompting**: Gemini generates contextual prompts specific to the current UI state
-4. **Action Execution**: Agent returns action based on Gemini-enhanced prompt
-5. **Results Tracking**: Gemini usage tracked in evaluation results
+3. **TextGrad Optimization**: If enabled, optimizes Gemini's analysis for better agent understanding
+4. **Enhanced Prompting**: Combines Gemini's visual insights with your chosen prompt variant (base/few-shot/reflective)
+5. **Action Execution**: Agent returns action based on optimized Gemini-enhanced prompt
+6. **Results Tracking**: Gemini and TextGrad usage tracked in evaluation results
 
-**Important**: The `--prompt-variant` and `--gemini` flags are mutually exclusive because:
-- Standard prompt variants use pre-written templates (`base`, `few-shot`, `reflective`)
-- Gemini generates prompts dynamically based on visual UI analysis
-- You must choose one prompting approach: either static templates or dynamic generation
+**Key Benefits:**
+- **`--gemini`** adds visual UI understanding to any prompt variant
+- **`--textgrad`** automatically enables `--gemini` and optimizes the visual analysis
+- Each prompt variant has a corresponding Gemini-enhanced version that preserves the variant's characteristics
+- You can combine any prompt variant with Gemini and TextGrad for maximum effectiveness
 ```
 
 ### Function Calling Demo
@@ -180,9 +192,12 @@ This script demonstrates:
 ### Advanced Usage
 
 ```bash
+# Combine all features: few-shot prompting + Gemini visual analysis + TextGrad optimization + function calling
 python run_evaluation.py \
   --task "single_task_name" \
   --prompt-variant "few-shot" \
+  --gemini \
+  --textgrad \
   --model-name "gpt-4o-mini" \
   --max-steps 50 \
   --num-episodes 3 \
@@ -196,8 +211,9 @@ NOTE: for `o-series` models, you MUST use the `--function-calling` flag to enabl
 ### Available Options
 
 - `--task`: Task name to evaluate (random if not specified)
-- `--prompt-variant`: Prompting variant (`base`, `few-shot`, `reflective`) - **Required when not using `--gemini`**
-- `--gemini`: Enable Gemini 2.5 visual prompting (generates dynamic prompts) - **Required when not using `--prompt-variant`**
+- `--prompt-variant`: Prompting variant (`base`, `few-shot`, `reflective`) - **Works with or without `--gemini`**
+- `--gemini`: Enable Gemini 2.5 visual prompting (enhances any prompt variant) - **Can be combined with any `--prompt-variant`**
+- `--textgrad`: Enable TextGrad optimization for improved Gemini analysis (automatically enables `--gemini`)
 - `--model-name`: OpenAI model to use (default: `gpt-4o-mini`)
 - `--max-steps`: Maximum steps per episode (default: 30)
 - `--num-episodes`: Number of episodes to run (default: 1)
@@ -218,10 +234,11 @@ android_world_agents/
 │   ├── function_calling_llm.py # OpenAI function calling LLM wrapper
 │   ├── gemini_prompting.py   # 🆕 Gemini 2.5 visual prompt generation
 │   ├── gemini_enhanced_agent.py # 🆕 Gemini-enhanced T3A agent with seamless integration
+│   ├── textgrad_opt.py       # 🆕 TextGrad optimization for improving Gemini analysis
 │   ├── main.py               # Main entry point
 │   ├── prompts.py            # Prompt management utilities
 │   ├── run_episode.py        # Episode execution logic
-│   ├── test_utils.py         # Testing utilities
+│   ├── test_utils.py         # Testing utilities (moved to tests/)
 │   └── utils.py              # AndroidWorld integration utilities
 ├── prompts/
 │   ├── base_prompt.txt       # Base prompting template
@@ -260,17 +277,6 @@ android_world_agents/
 ├── GEMINI_README.md          # 🆕 Complete Gemini documentation
 └── README.md                 # This file
 ```
-├── evaluate_with_gemini.py   # 🆕 AndroidWorld evaluation with Gemini
-├── replay_episode.py         # Episode replay system
-├── fix_init_files.sh         # Script to create missing __init__.py files
-├── pyproject.toml            # Package configuration
-├── run_tests.py              # Test runner script
-├── run_evaluation.py         # Main launcher script
-├── setup.sh                  # Automated setup script
-├── verify_framework.py       # Framework verification script
-├── GEMINI_README.md          # 🆕 Complete Gemini documentation
-└── README.md                 # This file
-```
 
 ## Agent Types
 
@@ -295,29 +301,52 @@ android_world_agents/
 - Improved action parsing and validation
 - Compatible with all existing agent variants
 
-## 🆕 Gemini 2.5 Visual Prompt Generation
+## 🆕 Gemini 2.5 Visual Prompt Generation with TextGrad Optimization
 
-This framework now includes cutting-edge visual prompt generation using Google's Gemini 2.5 model. Instead of using static prompts, the system can analyze Android UI screenshots in real-time and generate contextual, dynamic prompts tailored to the current interface state.
+This framework includes cutting-edge visual prompt generation using Google's Gemini 2.5 model, enhanced with TextGrad optimization for improved agent understanding. The system can enhance any existing prompt variant (base, few-shot, reflective) with visual UI analysis and gradient-based optimization.
+
+**Key Architectural Design:**
+- **Prompt Variants**: Each variant (base/few-shot/reflective) has both standard and Gemini-enhanced versions
+- **Gemini Enhancement**: Adds visual UI analysis to any prompt variant without replacing the variant's characteristics  
+- **TextGrad Optimization**: Optimizes Gemini's visual analysis for better agent understanding
+- **Full Compatibility**: All features work together seamlessly
 
 ### Key Features
 
 - **🔍 Visual UI Analysis**: Gemini 2.5 analyzes Android screenshots to understand current interface
-- **🎯 Context-Aware Prompting**: Generates prompts specific to visible UI elements and current state
-- **🤖 Agent-Optimized**: Creates prompts specifically designed for AndroidWorld agents
-- **� Seamless Integration**: Drop-in replacement for standard agents with graceful fallback
-- **�📊 Performance Comparison**: Compare standard vs Gemini-enhanced prompting approaches
-- **💪 Full Compatibility**: Works with all existing prompt variants and function calling
+- **🎯 Context-Aware Prompting**: Generates enhanced versions of any prompt variant using visual UI understanding
+- **🚀 TextGrad Optimization**: Uses gradient-based optimization to improve Gemini's visual analysis for better agent understanding
+- **🤖 Prompt Variant Compatibility**: Works with all existing prompt variants (base, few-shot, reflective) to create enhanced versions
+- **🔄 Seamless Integration**: Drop-in enhancement for any agent configuration with graceful fallback
+- **📊 Performance Comparison**: Compare standard vs Gemini-enhanced vs TextGrad-optimized versions of any prompt variant
+- **💪 Full Compatibility**: Works with all existing features including function calling and memory
 
-### Quick Start with Gemini
+### Quick Start with Gemini and TextGrad
 
-#### 1. Setup Google API Key
+#### 1. Setup API Keys
 ```bash
 export GOOGLE_API_KEY="your-google-api-key"
+export OPENAI_API_KEY="your-openai-api-key"  # For TextGrad optimization
 ```
 
-#### 2. Install Gemini Dependencies
+#### 2. Install Dependencies
 ```bash
-pip install google-generativeai pillow
+pip install google-generativeai pillow textgrad
+```
+
+#### 3. Run with Gemini and TextGrad Optimization
+```bash
+# Basic prompting with Gemini enhancement
+python run_evaluation.py --task "SystemBrightnessMax" --prompt-variant base --gemini
+
+# Few-shot prompting with Gemini visual analysis
+python run_evaluation.py --task "SystemBrightnessMax" --prompt-variant few-shot --gemini
+
+# Enhanced with TextGrad optimization for improved agent understanding
+python run_evaluation.py --task "SystemBrightnessMax" --prompt-variant base --gemini --textgrad
+
+# Multiple episodes with reflective prompting, Gemini, and TextGrad
+python run_evaluation.py --task "SystemBrightnessMax" --prompt-variant reflective --gemini --textgrad --num-episodes 3
 ```
 
 #### 3. Run Gemini Prompting Demo
@@ -367,7 +396,8 @@ python test_gemini_integration.py
 1. **Screenshot Analysis**: Gemini 2.5 receives the current Android UI screenshot
 2. **Context Understanding**: The model analyzes visible elements, current app, and interface state  
 3. **Task Integration**: Combines UI analysis with the specific task goal
-4. **Prompt Generation**: Creates a tailored prompt that guides the agent to complete the task
+4. **TextGrad Optimization**: If enabled, optimizes the visual analysis using gradient-based techniques for better agent understanding
+5. **Prompt Generation**: Creates a tailored prompt that guides the agent to complete the task
 
 ### Gemini Integration Architecture
 
@@ -383,12 +413,20 @@ The Gemini integration is designed for seamless compatibility with existing Andr
 2. **`GeminiEnhancedT3A`** (`src/gemini_enhanced_agent.py`)
    - Extends existing Enhanced T3A agent
    - Optionally uses Gemini for visual analysis
+   - Integrates TextGrad optimization when enabled
    - Gracefully falls back to standard prompting if Gemini fails
    - Maintains full compatibility with all existing features
+
+3. **`TextGradOptimizer`** (`src/textgrad_opt.py`)
+   - Uses TextGrad to optimize Gemini's visual analysis
+   - Preserves Gemini's structured bullet-point format
+   - Improves clarity for better agent understanding
+   - Keeps all UI elements while highlighting relevant ones
 
 3. **Integration Functions**
    - `create_gemini_enhanced_agent()`: Factory for Gemini-enabled agents
    - `create_standard_agent_with_gemini_fallback()`: Automatic fallback logic
+   - TextGrad optimization integration when enabled
    - Status tracking and usage statistics
 
 #### Smart Fallback System
@@ -397,7 +435,11 @@ The integration includes multiple layers of fallback to ensure reliability:
 
 ```python
 # Priority order for prompt generation:
-1. Gemini 2.5 visual analysis (if enabled and working)
+1. Gemini 2.5 visual analysis with TextGrad optimization (if both enabled and working)
+2. Gemini 2.5 visual analysis (if enabled and working)
+3. Standard enhanced prompting (few-shot, reflective, etc.)
+4. Base AndroidWorld prompting (ultimate fallback)
+```
 2. Standard enhanced prompting (few-shot, reflective, etc.)
 3. Base AndroidWorld prompting (ultimate fallback)
 ```
@@ -407,19 +449,21 @@ The integration includes multiple layers of fallback to ensure reliability:
 ```python
 from src.gemini_enhanced_agent import create_gemini_enhanced_agent
 
-# Create agent with Gemini integration
+# Create agent with Gemini integration and TextGrad optimization
 agent = create_gemini_enhanced_agent(
     env=env,
     model_name="gpt-4o-mini",
     prompt_variant="base",           # Works with any variant
     use_function_calling=True,       # Compatible with function calling
     use_gemini=True,                 # Enable Gemini visual analysis
+    use_textgrad=True,               # Enable TextGrad optimization
     gemini_model="gemini-2.5-flash"
 )
 
-# Check if Gemini is working
+# Check if Gemini and TextGrad are working
 status = agent.get_gemini_status()
 print(f"Gemini enabled: {status['gemini_enabled']}")
+print(f"TextGrad enabled: {status.get('textgrad_enabled', False)}")
 
 # Use exactly like any other agent
 result = agent.step("Turn on Wi-Fi")
@@ -427,44 +471,59 @@ result = agent.step("Turn on Wi-Fi")
 
 #### Performance Monitoring
 
-The enhanced agents track Gemini usage automatically:
+The enhanced agents track Gemini and TextGrad usage automatically:
 
 ```python
 # After evaluation, check usage statistics
 step_data = agent.history[-1]  # Last step
 gemini_used = step_data.get('used_gemini', False)
+textgrad_used = step_data.get('used_textgrad', False)
 print(f"Gemini was used: {gemini_used}")
+print(f"TextGrad optimization was used: {textgrad_used}")
 ```
-2. **Context Understanding**: The model analyzes visible elements, current app, and interface state
-3. **Task Integration**: Combines UI analysis with the specific task goal
-4. **Prompt Generation**: Creates a tailored prompt that guides the agent to complete the task
+1. **Task Integration**: Combines UI analysis with the specific task goal
+2. **TextGrad Optimization**: If enabled, optimizes the visual analysis using gradient-based techniques for better agent understanding  
+3. **Prompt Generation**: Creates a tailored prompt that guides the agent to complete the task
 
 ### Example Output
 
-**Input**: Screenshot of Android Settings + Goal: "Turn on Wi-Fi"
+**Input**: Screenshot of Android Settings + Goal: "Turn on Wi-Fi" + Prompt Variant: "base"
 
-**Gemini Analysis**:
+**Standard Base Prompting**:
 ```
-The screenshot shows the Android Settings app with Wi-Fi option visible. 
-The Wi-Fi toggle appears to be in the "off" state.
+Your task is to turn on Wi-Fi. Look at the screen and determine the next action to take.
+Available actions: [list of UI elements]
 ```
 
-**Generated Agent Prompt**:
+**Gemini-Enhanced Base Prompting**:
 ```
-Your task is to turn on Wi-Fi. You can see the Settings screen is already open. 
-Look for the "Wi-Fi" option in the settings list - it should be one of the top items. 
-Next to the Wi-Fi text, there should be a toggle switch. If the switch appears to be 
-in the "off" position, tap on it to enable Wi-Fi.
+● Goal: Turn on Wi-Fi
+● Current screen: Android Settings main screen showing network and connectivity options
+● Options: ["Wi-Fi" (currently OFF), "Bluetooth", "Display", "Sound", "Network & internet"]
+● Action: TAP on the "Wi-Fi" option to access Wi-Fi settings
+
+Your task is to turn on Wi-Fi. Use the visual analysis above to determine the next action.
+```
+
+**TextGrad Optimized Gemini-Enhanced Base Prompting**:
+```
+● Goal: Turn on Wi-Fi
+● Current screen: Android Settings main screen - you need to access Wi-Fi controls
+● Options: ["Wi-Fi" (currently OFF - this is your target), "Bluetooth", "Display", "Sound", "Network & internet"]  
+● Action: TAP on the "Wi-Fi" option to access Wi-Fi settings where you can toggle it ON
+
+Your task is to turn on Wi-Fi. The visual analysis above shows the Wi-Fi option is currently off and provides clear next steps.
 ```
 
 ### Troubleshooting
 
 **Common Issues:**
 
-1. **API Key Not Found**: Set `GOOGLE_API_KEY` environment variable
-2. **Connection Failed**: Check internet connection and verify API key is valid
-3. **Empty Responses**: Verify image contains visible content, try different temperature
-4. **Import Errors**: Run `pip install google-generativeai pillow`
+1. **API Keys Not Found**: Set both `GOOGLE_API_KEY` and `OPENAI_API_KEY` environment variables
+2. **Connection Failed**: Check internet connection and verify both API keys are valid
+3. **TextGrad Import Error**: Run `pip install textgrad` to install TextGrad optimization
+4. **Empty Responses**: Verify image contains visible content, try different temperature
+5. **Import Errors**: Run `pip install google-generativeai pillow textgrad`
 
 **Debug Mode:**
 ```python

@@ -90,7 +90,7 @@ def run_episode(
     use_memory: bool = True,
     use_function_calling: bool = False,
     use_gemini: bool = False,
-    use_text2grad: bool = False
+    use_textgrad: bool = False
 ) -> Dict[str, Any]:
     """Run a single episode evaluation.
     
@@ -103,7 +103,7 @@ def run_episode(
         use_memory: Whether to use memory (step history) in agent prompts.
         use_function_calling: Whether to use OpenAI function calling for structured output.
         use_gemini: Whether to use Gemini 2.5 Flash for visual UI analysis and enhanced prompting.
-        use_text2grad: Whether to use Text2Grad processing on Gemini output.
+        use_textgrad: Whether to use TextGrad optimization on Gemini output.
         
     Returns:
         Episode results dictionary.
@@ -157,10 +157,10 @@ def run_episode(
             use_memory=use_memory,
             use_function_calling=use_function_calling,
             use_gemini=True,
-            use_text2grad=use_text2grad
+            use_textgrad=use_textgrad
         )
-        if use_text2grad:
-            print(f"🔮 Using Gemini 2.5 Flash for visual UI analysis with Text2Grad processing")
+        if use_textgrad:
+            print(f"🔮 Using Gemini 2.5 Flash for visual UI analysis with TextGrad optimization")
         else:
             print(f"🔮 Using Gemini 2.5 Flash for visual UI analysis")
     else:
