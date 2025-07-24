@@ -104,6 +104,20 @@ def main():
         help="Enable Text2Grad processing on Gemini visual analysis output for gradient-based feedback (automatically enables --gemini)"
     )
     
+    parser.add_argument(
+        "--k-rollouts",
+        type=int,
+        default=3,
+        help="Number of rollouts for Text2Grad optimization (default: 3)"
+    )
+    
+    parser.add_argument(
+        "--n-steps",
+        type=int,
+        default=5,
+        help="Number of steps per rollout for Text2Grad optimization (default: 5)"
+    )
+    
     # Evaluation options
     parser.add_argument(
         "--num-episodes", 
@@ -163,7 +177,7 @@ def main():
         print(f"   Prompting: Gemini-enhanced {args.prompt_variant}")
         print(f"   Visual Analysis: Enabled (Gemini 2.5 Flash)")
         if args.text2grad:
-            print(f"   Text2Grad: Enabled (gradient-based feedback processing)")
+            print(f"   Text2Grad: Enabled (k={args.k_rollouts} rollouts, n={args.n_steps} steps)")
         else:
             print(f"   Text2Grad: Disabled")
     else:
@@ -190,7 +204,9 @@ def main():
                 use_memory=not args.disable_memory,
                 use_function_calling=args.function_calling,
                 use_gemini=args.gemini,
-                use_text2grad=args.text2grad
+                use_text2grad=args.text2grad,
+                k_rollouts=args.k_rollouts,
+                n_steps=args.n_steps
             )
             
             if result.get("success"):

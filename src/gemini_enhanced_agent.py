@@ -19,12 +19,12 @@ import numpy as np
 from typing import Optional, Dict, Any, List, Tuple
 from PIL import Image
 
-from src import prompts
-from src.prompts import get_gemini_enhanced_prompt, format_prompt
-from src.function_calling_llm import create_llm
-from src.text2grad_integration import create_text2grad_processor
+import prompts
+from prompts import get_gemini_enhanced_prompt, format_prompt
+from function_calling_llm import create_llm
+# Text2Grad integration simplified - full implementation is in text2grad_agent.py
 from android_world.agents.m3a import _summarize_prompt
-from src.agent import (
+from agent import (
     EnhancedT3A, 
     create_agent,
     _generate_seeact_ui_elements_description
@@ -87,7 +87,7 @@ class GeminiEnhancedT3A(EnhancedT3A):
         self.use_gemini = use_gemini and GEMINI_AVAILABLE
         self.use_text2grad = use_text2grad and use_gemini  # Text2Grad requires Gemini
         self.gemini_generator = None
-        self.text2grad_processor = None
+        self.text2grad_processor = None  # Simplified - main Text2Grad in text2grad_agent.py
         
         # Initialize Gemini generator if requested and available
         if self.use_gemini:
@@ -105,22 +105,11 @@ class GeminiEnhancedT3A(EnhancedT3A):
                 else:
                     print(f"✅ Gemini {gemini_model} initialized for visual UI analysis")
                     
-                    # Initialize Text2Grad processor if requested
+                    # Text2Grad integration simplified - full optimization is in text2grad_agent.py
                     if self.use_text2grad:
-                        try:
-                            
-                            self.text2grad_processor = create_text2grad_processor(enabled=True)
-                            if self.text2grad_processor.is_available():
-                                print("✅ Text2Grad processor initialized for gradient-based feedback")
-                            else:
-                                print("⚠️ Text2Grad initialization failed, using standard Gemini analysis")
-                                self.use_text2grad = False
-                        except ImportError:
-                            print("⚠️ Text2Grad integration module not available")
-                            self.use_text2grad = False
-                        except Exception as e:
-                            print(f"⚠️ Failed to initialize Text2Grad: {e}")
-                            self.use_text2grad = False
+                        print("✅ Text2Grad optimization available via text2grad_agent.py")
+                        # For Gemini integration, we just note that Text2Grad is available
+                        # The main optimization happens in text2grad_agent.py
                             
             except Exception as e:
                 print(f"⚠️ Failed to initialize Gemini: {e}")
@@ -192,23 +181,12 @@ class GeminiEnhancedT3A(EnhancedT3A):
                 raw_response = gemini_result.get('raw_response', '')
                 
                 if raw_response and raw_response.strip():
-                    # Apply Text2Grad processing if enabled
+                    # Apply Text2Grad processing is handled in text2grad_agent.py for optimization
                     processed_analysis = raw_response.strip()
-                    if self.use_text2grad and self.text2grad_processor:
-                        try:
-                            task_context = {
-                                'goal': goal,
-                                'ui_elements': ui_elements_description,
-                                'memory': memory
-                            }
-                            processed_analysis = self.text2grad_processor.process_gemini_output(
-                                raw_response.strip(), 
-                                task_context
-                            )
-                            print("✅ Applied Text2Grad processing to Gemini analysis")
-                        except Exception as e:
-                            print(f"⚠️ Text2Grad processing failed: {e}, using original analysis")
-                            processed_analysis = raw_response.strip()
+                    if self.use_text2grad:
+                        # Note: Main Text2Grad optimization happens in text2grad_agent.py
+                        # This is just the Gemini analysis phase
+                        processed_analysis += "\n[Note: Text2Grad optimization available via text2grad_agent.py]"
                     
                     # Use the Gemini-enhanced prompt template
                     gemini_prompt_template = prompts.get_gemini_enhanced_prompt(self.prompt_variant)

@@ -17,6 +17,8 @@ from agent import create_agent
 from evaluator import EpisodeEvaluator
 from utils import find_adb_directory, ensure_results_dir, suppress_grpc_logging
 from gemini_enhanced_agent import create_gemini_enhanced_agent
+from text2grad_agent import create_text2grad_agent, Text2GradConfig
+from gemini_prompting import create_gemini_generator
 
 # Suppress gRPC verbose logging before any gRPC communication
 suppress_grpc_logging()
@@ -90,7 +92,9 @@ def run_episode(
     use_memory: bool = True,
     use_function_calling: bool = False,
     use_gemini: bool = False,
-    use_text2grad: bool = False
+    use_text2grad: bool = False,
+    k_rollouts: int = 3,
+    n_steps: int = 5
 ) -> Dict[str, Any]:
     """Run a single episode evaluation.
     
@@ -148,7 +152,52 @@ def run_episode(
     task.initialize_task(env)
     
     # Create agent
-    if use_gemini:
+    if use_text2grad:
+        # Text2Grad requires Gemini for optimization
+        if not use_gemini:
+            print("⚠️ Text2Grad requires Gemini to be enabled. Enabling Gemini automatically.")
+            use_gemini = True
+        
+        # Create Gemini generator for Text2Grad
+        api_key = os.getenv("GOOGLE_API_KEY")
+        if not api_key:
+            print("❌ GOOGLE_API_KEY not set. Text2Grad requires Gemini integration.")
+            print("⚠️ Falling back to standard agent")
+            use_text2grad = False
+            use_gemini = False
+        else:
+            gemini_generator = create_gemini_generator(
+                api_key=api_key,
+                model_name="gemini-2.5-flash"
+            )
+            
+            if not gemini_generator:
+                print("❌ Failed to create Gemini generator for Text2Grad")
+                print("⚠️ Falling back to Gemini-only agent")
+                use_text2grad = False
+            else:
+                # Create Text2Grad configuration
+                text2grad_config = Text2GradConfig(
+                    k_rollouts=k_rollouts,
+                    n_steps=n_steps,
+                    learning_rate=0.1,
+                    optimization_timeout=300.0,
+                    enable_early_stopping=True
+                )
+                
+                # Create Text2Grad agent
+                agent = create_text2grad_agent(
+                    env=env,
+                    model_name=model_name,
+                    prompt_variant=prompt_variant,
+                    use_memory=use_memory,
+                    use_function_calling=use_function_calling,
+                    text2grad_config=text2grad_config,
+                    gemini_generator=gemini_generator
+                )
+                print(f"🔮 Using Text2Grad optimization with {k_rollouts} rollouts × {n_steps} steps")
+
+    if not use_text2grad and use_gemini:
         # Import Gemini-enhanced agent
         agent = create_gemini_enhanced_agent(
             env=env,
@@ -163,7 +212,7 @@ def run_episode(
             print(f"🔮 Using Gemini 2.5 Flash for visual UI analysis with Text2Grad processing")
         else:
             print(f"🔮 Using Gemini 2.5 Flash for visual UI analysis")
-    else:
+    elif not use_text2grad:
         agent = create_agent(env, model_name, prompt_variant, use_memory, use_function_calling)
     
     print(f"🎯 Goal: {task.goal}")
@@ -342,6 +391,32 @@ def main():
         help="Output directory for results (default: results)"
     )
     
+    parser.add_argument(
+        "--use-gemini",
+        action="store_true",
+        help="Enable Gemini enhanced visual analysis"
+    )
+    
+    parser.add_argument(
+        "--use-text2grad",
+        action="store_true",
+        help="Enable Text2Grad optimization for prompts (requires Gemini)"
+    )
+    
+    parser.add_argument(
+        "--k-rollouts",
+        type=int,
+        default=3,
+        help="Number of Text2Grad optimization rollouts (default: 3)"
+    )
+    
+    parser.add_argument(
+        "--n-steps",
+        type=int,
+        default=5,
+        help="Number of steps per Text2Grad rollout (default: 5)"
+    )
+    
     args = parser.parse_args()
     
     try:
@@ -351,7 +426,11 @@ def main():
             prompt_variant=args.prompt_variant,
             max_steps=args.max_steps,
             output_dir=args.output_dir,
-            use_memory=not args.disable_memory
+            use_memory=not args.disable_memory,
+            use_gemini=args.use_gemini,
+            use_text2grad=args.use_text2grad,
+            k_rollouts=args.k_rollouts,
+            n_steps=args.n_steps
         )
         
         exit(0 if results["success"] else 1)

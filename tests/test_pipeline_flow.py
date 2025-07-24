@@ -38,15 +38,17 @@ def test_gemini_to_text2grad_flow():
             return False
         print("✅ Gemini generator created successfully")
         
-        # Step 2: Initialize Text2Grad Processor
-        print("\n2️⃣ Initializing Text2Grad Processor...")
-        from src.text2grad_integration import create_text2grad_processor
+        # Step 2: Initialize Text2Grad Main Implementation
+        print("\n2️⃣ Initializing Text2Grad Main Implementation...")
+        from src.text2grad_agent import Text2GradOptimizer
         
-        processor = create_text2grad_processor(enabled=True)
-        if not processor.is_available():
-            print("❌ Text2Grad processor not available")
-            return False
-        print("✅ Text2Grad processor initialized successfully")
+        optimizer = Text2GradOptimizer(
+            model_name="gpt-4o-mini",
+            dense_reward_enabled=True,
+            k_rollouts=2,
+            n_steps=3
+        )
+        print("✅ Text2Grad optimizer initialized successfully")
         
         # Step 3: Create mock screenshot for Gemini
         print("\n3️⃣ Creating mock UI screenshot...")

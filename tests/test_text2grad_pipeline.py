@@ -194,26 +194,22 @@ def test_pipeline_components_individually():
     except Exception as e:
         print(f"❌ Gemini generator test failed: {e}")
     
-    # Test 2: Text2Grad Processor
-    print("\n2️⃣ Testing Text2Grad Processor...")
+    # Test 2: Text2Grad Main Implementation (in text2grad_agent.py)
+    print("\n2️⃣ Testing Text2Grad Main Implementation...")
     try:
-        from src.text2grad_integration import create_text2grad_processor
+        from src.text2grad_agent import Text2GradOptimizer
         
-        processor = create_text2grad_processor(enabled=True)
-        if processor.is_available():
-            print("✅ Text2Grad processor created and available")
-            
-            # Test processing
-            test_analysis = "UI contains a send button for messaging functionality."
-            result = processor.process_gemini_output(test_analysis, {"test": True})
-            if len(result) > len(test_analysis):
-                print("✅ Text2Grad processing working (output enhanced)")
-            else:
-                print("⚠️  Text2Grad processing may not be working properly")
-        else:
-            print("❌ Text2Grad processor not available")
+        # Create a simple optimizer instance
+        optimizer = Text2GradOptimizer(
+            model_name="gpt-4o-mini",
+            dense_reward_enabled=True,
+            k_rollouts=2,
+            n_steps=3
+        )
+        print("✅ Text2Grad optimizer created successfully")
+        print(f"✅ Text2Grad configuration: {optimizer.k_rollouts} rollouts, {optimizer.n_steps} steps each")
     except Exception as e:
-        print(f"❌ Text2Grad processor test failed: {e}")
+        print(f"❌ Text2Grad main implementation test failed: {e}")
     
     # Test 3: Agent Creation
     print("\n3️⃣ Testing Agent Creation...")
