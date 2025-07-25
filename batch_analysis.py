@@ -104,6 +104,9 @@ class BatchEpisodeAnalyzer:
         prompt_stats = defaultdict(lambda: {'total': 0, 'successful': 0})
         for episode in self.episodes:
             prompt_variant = episode.get('prompt_variant', 'Unknown')
+            # Handle None values
+            if prompt_variant is None:
+                prompt_variant = 'None'
             prompt_stats[prompt_variant]['total'] += 1
             if episode.get('success', False):
                 prompt_stats[prompt_variant]['successful'] += 1
@@ -253,7 +256,7 @@ class BatchEpisodeAnalyzer:
                 'file_name': episode.get('_file_name', ''),
                 'task_name': episode.get('task_name', ''),
                 'model_name': episode.get('model_name', ''),
-                'prompt_variant': episode.get('prompt_variant', ''),
+                'prompt_variant': episode.get('prompt_variant') or 'None',  # Handle None values
                 'success': episode.get('success', False),
                 'steps_taken': episode.get('steps_taken', 0),
                 'max_steps': episode.get('max_steps', 30),

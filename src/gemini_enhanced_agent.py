@@ -14,10 +14,14 @@ Key Features:
 """
 
 import os
+import sys
 import json
 import numpy as np
 from typing import Optional, Dict, Any, List, Tuple, Tuple
 from PIL import Image
+
+# Add current directory to path for local imports
+sys.path.insert(0, os.path.dirname(__file__))
 
 from src import prompts
 from src.prompts import get_gemini_enhanced_prompt, format_prompt

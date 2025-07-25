@@ -13844,5 +13844,92 @@
     "gemini_enabled": true,
     "gemini_generator_initialized": true,
     "model": "gemini-2.5-flash"
+  },
+  "reward_evaluation": {
+    "task_name": "SystemBrightnessMin",
+    "goal": "Turn brightness to the min value.",
+    "success": false,
+    "steps_taken": 7,
+    "total_reward": 0.05,
+    "completion_reward": 0.0,
+    "step_penalty": -0.35000000000000003,
+    "subgoal_reward": 0.4,
+    "subgoals_achieved": [
+      "Open Settings app",
+      "Set brightness to minimum"
+    ],
+    "subgoals_possible": [
+      "Open Settings app",
+      "Set brightness to minimum"
+    ],
+    "subgoal_completion_rate": 1.0,
+    "step_rewards": [
+      {
+        "step": 1,
+        "base_reward": -0.05,
+        "subgoal_reward": 0.2,
+        "newly_achieved_subgoals": [
+          "Open Settings app"
+        ],
+        "total_step_reward": 0.15000000000000002,
+        "cumulative_reward": 0.15000000000000002
+      },
+      {
+        "step": 2,
+        "base_reward": -0.05,
+        "subgoal_reward": 0.0,
+        "newly_achieved_subgoals": [],
+        "total_step_reward": -0.05,
+        "cumulative_reward": 0.10000000000000002
+      },
+      {
+        "step": 3,
+        "base_reward": -0.05,
+        "subgoal_reward": 0.0,
+        "newly_achieved_subgoals": [],
+        "total_step_reward": -0.05,
+        "cumulative_reward": 0.05000000000000002
+      },
+      {
+        "step": 4,
+        "base_reward": -0.05,
+        "subgoal_reward": 0.0,
+        "newly_achieved_subgoals": [],
+        "total_step_reward": -0.05,
+        "cumulative_reward": 1.3877787807814457e-17
+      },
+      {
+        "step": 5,
+        "base_reward": -0.05,
+        "subgoal_reward": 0.2,
+        "newly_achieved_subgoals": [
+          "Set brightness to minimum"
+        ],
+        "total_step_reward": 0.15000000000000002,
+        "cumulative_reward": 0.15000000000000002
+      },
+      {
+        "step": 6,
+        "base_reward": -0.05,
+        "subgoal_reward": 0.0,
+        "newly_achieved_subgoals": [],
+        "total_step_reward": -0.05,
+        "cumulative_reward": 0.10000000000000002
+      },
+      {
+        "step": 7,
+        "base_reward": -0.05,
+        "subgoal_reward": 0.0,
+        "newly_achieved_subgoals": [],
+        "total_step_reward": -0.05,
+        "cumulative_reward": 0.05000000000000002
+      }
+    ],
+    "reward_breakdown": {
+      "step_penalties": -0.35000000000000003,
+      "subgoal_rewards": 0.4,
+      "completion_reward": 0.0,
+      "total": 0.05
+    }
   }
 }

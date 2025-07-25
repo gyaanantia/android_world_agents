@@ -112,6 +112,12 @@ def main():
         help="Number of episodes to run per task"
     )
     
+    parser.add_argument(
+        "--calculate-reward",
+        action="store_true", 
+        help="Calculate and display reward after episode completion"
+    )
+    
     args = parser.parse_args()
     
     # Auto-enable Gemini when TextGrad is requested
@@ -198,6 +204,31 @@ def main():
             
             print(f"   Steps taken: {result.get('steps_taken', 0)}")
             print(f"   Result file: {result.get('result_file', 'Not saved')}")
+            
+            # Calculate reward if requested
+            if args.calculate_reward and result.get('result_file'):
+                try:
+                    from evaluate_reward import calculate_episode_reward, print_reward_summary, update_episode_with_rewards
+                    import json
+                    
+                    print(f"🏆 Calculating reward for Episode {episode + 1}...")
+                    
+                    # Load episode data
+                    with open(result['result_file'], 'r') as f:
+                        episode_data = json.load(f)
+                    
+                    # Calculate reward
+                    reward_data = calculate_episode_reward(episode_data)
+                    
+                    # Update file with reward information
+                    update_episode_with_rewards(result['result_file'], reward_data)
+                    
+                    # Print reward summary
+                    print_reward_summary(reward_data)
+                    
+                except Exception as e:
+                    print(f"⚠️  Failed to calculate reward: {e}")
+            
             print()
     
     except KeyboardInterrupt:
