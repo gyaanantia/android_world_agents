@@ -54,6 +54,9 @@ Text2Grad/
 episode_*.json
 *.log
 
+# TextGrad auto-generated logs
+logs/
+
 # Android
 *.apk
 *.dex

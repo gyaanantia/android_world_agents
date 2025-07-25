@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Simplified test to demonstrate the Text2Grad pipeline is working.
+Simplified test to demonstrate the TextGrad pipeline is working.
 Focus on showing the control flow components without full AndroidWorld integration.
 """
 
@@ -11,14 +11,15 @@ import numpy as np
 
 # Add src to path
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'src'))
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
-def test_gemini_to_text2grad_flow():
-    """Test the core Gemini -> Text2Grad -> Agent prompt flow."""
-    print("🧪 Testing Core Text2Grad Pipeline Flow")
+def test_gemini_to_textgrad_flow():
+    """Test the core Gemini -> TextGrad -> Agent prompt flow."""
+    print("🧪 Testing Core TextGrad Pipeline Flow")
     print("=" * 60)
     
     # Check environment
@@ -38,15 +39,15 @@ def test_gemini_to_text2grad_flow():
             return False
         print("✅ Gemini generator created successfully")
         
-        # Step 2: Initialize Text2Grad Processor
-        print("\n2️⃣ Initializing Text2Grad Processor...")
-        from src.text2grad_integration import create_text2grad_processor
+        # Step 2: Initialize TextGrad Optimizer
+        print("\n2️⃣ Initializing TextGrad Optimizer...")
+        from src.textgrad_opt import create_textgrad_optimizer
         
-        processor = create_text2grad_processor(enabled=True)
-        if not processor.is_available():
-            print("❌ Text2Grad processor not available")
+        optimizer = create_textgrad_optimizer(enabled=True)
+        if not optimizer.is_available():
+            print("❌ TextGrad optimizer not available")
             return False
-        print("✅ Text2Grad processor initialized successfully")
+        print("✅ TextGrad optimizer initialized successfully")
         
         # Step 3: Create mock screenshot for Gemini
         print("\n3️⃣ Creating mock UI screenshot...")
@@ -78,29 +79,30 @@ def test_gemini_to_text2grad_flow():
         print(f"   Gemini output length: {len(gemini_output)} characters")
         print(f"   First 200 chars: {gemini_output[:200]}...")
         
-        # Step 5: Text2Grad Processing
-        print("\n5️⃣ Gemini output -> Text2Grad -> Text2Grad output")
-        print("   Processing Gemini analysis through Text2Grad...")
+        # Step 5: TextGrad Optimization
+        print("\n5️⃣ Gemini output -> TextGrad -> Optimized output")
+        print("   Optimizing Gemini analysis through TextGrad...")
         
-        task_context = {
-            'goal': goal,
-            'ui_elements': "Mock UI elements for testing",
-            'memory': ["Test step 1: Initial state"]
-        }
+        ui_elements = "0: Button 'Compose' (clickable)\n1: List 'Messages' (scrollable)"
         
-        text2grad_output = processor.process_gemini_output(gemini_output, task_context)
+        textgrad_output = optimizer.optimize_visual_analysis(
+            gemini_analysis=gemini_output,
+            task_goal=goal,
+            ui_elements=ui_elements
+        )
         
-        if len(text2grad_output) <= len(gemini_output):
-            print("⚠️  Text2Grad output not significantly enhanced")
+        if len(textgrad_output) == len(gemini_output) and textgrad_output == gemini_output:
+            print("⚠️  TextGrad output unchanged (may indicate optimization didn't run)")
         else:
-            print("✅ Text2Grad processing completed successfully")
+            print("✅ TextGrad optimization completed successfully")
             print(f"   Original length: {len(gemini_output)} characters")
-            print(f"   Enhanced length: {len(text2grad_output)} characters")
-            print(f"   Enhancement ratio: {len(text2grad_output)/len(gemini_output):.2f}x")
+            print(f"   Optimized length: {len(textgrad_output)} characters")
+            if len(textgrad_output) != len(gemini_output):
+                print(f"   Length change ratio: {len(textgrad_output)/len(gemini_output):.2f}x")
         
         # Step 6: Agent Prompt Formation
-        print("\n6️⃣ Text2Grad output + agent prompt -> agent model")
-        print("   Integrating Text2Grad output into agent prompt...")
+        print("\n6️⃣ TextGrad output + agent prompt -> agent model")
+        print("   Integrating TextGrad output into agent prompt...")
         
         from src import prompts
         
@@ -119,7 +121,7 @@ UI Elements:
             goal=goal,
             ui_elements=mock_ui_elements,
             memory="You just started, no action has been performed yet.",
-            gemini_analysis=text2grad_output
+            gemini_analysis=textgrad_output
         )
         
         print("✅ Final agent prompt created successfully")
@@ -128,16 +130,16 @@ UI Elements:
         # Show the complete pipeline flow
         print("\n7️⃣ Complete Pipeline Flow Demonstration")
         print("-" * 40)
-        print("FINAL AGENT PROMPT (contains Text2Grad enhanced analysis):")
+        print("FINAL AGENT PROMPT (contains TextGrad optimized analysis):")
         print("-" * 40)
         print(final_prompt[:1500] + "\n..." if len(final_prompt) > 1500 else final_prompt)
         print("-" * 40)
         
-        # Verify Text2Grad markers are present
-        if "Text2Grad" in final_prompt:
-            print("✅ Text2Grad processing markers found in final prompt")
+        # Verify optimization occurred
+        if textgrad_output != gemini_output:
+            print("✅ TextGrad optimization applied successfully")
         else:
-            print("⚠️  Text2Grad markers not found in final prompt")
+            print("⚠️  TextGrad optimization may not have modified the output")
         
         # Step 7: Mock Agent Response (would normally go to LLM)
         print("\n8️⃣ Agent model -> action (simulated)")
@@ -151,8 +153,8 @@ UI Elements:
         print("\n🎉 COMPLETE PIPELINE FLOW VERIFIED!")
         print("=" * 60)
         print("✅ 1. Gemini prompt -> gemini-2.5-flash -> gemini output")
-        print("✅ 2. Gemini output -> Text2Grad -> Text2Grad output")
-        print("✅ 3. Text2Grad output + agent prompt -> agent model -> action")
+        print("✅ 2. Gemini output -> TextGrad -> Optimized output")
+        print("✅ 3. TextGrad output + agent prompt -> agent model -> action")
         print("✅ 4. Action -> AndroidWorld")
         
         return True
@@ -171,8 +173,8 @@ def test_agent_class_integration():
     try:
         from src.gemini_enhanced_agent import GeminiEnhancedT3A
         
-        # Test that agent properly initializes with Text2Grad
-        print("Testing agent initialization with Text2Grad enabled...")
+        # Test that agent properly initializes with TextGrad
+        print("Testing agent initialization with TextGrad enabled...")
         
         # Check the agent class has the right pipeline methods
         agent_methods = dir(GeminiEnhancedT3A)
@@ -190,10 +192,10 @@ def test_agent_class_integration():
         init_signature = inspect.signature(GeminiEnhancedT3A.__init__)
         init_params = list(init_signature.parameters.keys())
         
-        if 'use_text2grad' in init_params:
-            print("✅ Agent supports use_text2grad parameter")
+        if 'use_textgrad' in init_params:
+            print("✅ Agent supports use_textgrad parameter")
         else:
-            print("❌ Agent missing use_text2grad parameter")
+            print("❌ Agent missing use_textgrad parameter")
             return False
         
         print("✅ Agent class integration verified")
@@ -205,24 +207,24 @@ def test_agent_class_integration():
 
 def main():
     """Main test function."""
-    print("🚀 TEXT2GRAD PIPELINE INTEGRATION VERIFICATION")
+    print("🚀 TEXTGRAD PIPELINE INTEGRATION VERIFICATION")
     print("Testing the complete control flow without full AndroidWorld dependency")
     print("=" * 80)
     
     # Test 1: Core pipeline flow
-    success1 = test_gemini_to_text2grad_flow()
+    success1 = test_gemini_to_textgrad_flow()
     
     # Test 2: Agent integration
     success2 = test_agent_class_integration()
     
     print("\n" + "=" * 80)
     if success1 and success2:
-        print("🎉 TEXT2GRAD PIPELINE INTEGRATION VERIFIED!")
+        print("🎉 TEXTGRAD PIPELINE INTEGRATION VERIFIED!")
         print("✅ The complete control flow is implemented and working")
-        print("✅ Agent class properly supports Text2Grad integration")
+        print("✅ Agent class properly supports TextGrad integration")
         print("✅ Pipeline ready for use with real AndroidWorld environment")
     else:
-        print("❌ TEXT2GRAD PIPELINE INTEGRATION VERIFICATION FAILED!")
+        print("❌ TEXTGRAD PIPELINE INTEGRATION VERIFICATION FAILED!")
         print("Check the error messages above for troubleshooting")
     
     return success1 and success2

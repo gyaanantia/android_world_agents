@@ -99,9 +99,9 @@ def main():
     )
     
     parser.add_argument(
-        "--text2grad",
+        "--textgrad",
         action="store_true",
-        help="Enable Text2Grad processing on Gemini visual analysis output for gradient-based feedback (automatically enables --gemini)"
+        help="Enable TextGrad optimization on Gemini visual analysis output (automatically enables --gemini)"
     )
     
     # Evaluation options
@@ -112,12 +112,18 @@ def main():
         help="Number of episodes to run per task"
     )
     
+    parser.add_argument(
+        "--calculate-reward",
+        action="store_true", 
+        help="Calculate and display reward after episode completion"
+    )
+    
     args = parser.parse_args()
     
-    # Auto-enable Gemini when Text2Grad is requested
-    if args.text2grad and not args.gemini:
+    # Auto-enable Gemini when TextGrad is requested
+    if args.textgrad and not args.gemini:
         args.gemini = True
-        print("ℹ️  Auto-enabling --gemini since --text2grad requires Gemini visual analysis")
+        print("ℹ️  Auto-enabling --gemini since --textgrad requires Gemini visual analysis")
     
     # Validate argument combinations - no mutual exclusivity needed anymore
     # Both --prompt-variant and --gemini can be used together
@@ -130,17 +136,15 @@ def main():
         print("Get an API key at: https://aistudio.google.com/app/apikey")
         sys.exit(1)
     
-    # Validate Text2Grad requirements
-    if args.text2grad:
-        # Check Text2Grad dependencies
+    # Validate TextGrad requirements
+    if args.textgrad:
+        # Check TextGrad dependencies
         try:
-            import torch
-            import transformers
-            print("✅ Text2Grad dependencies available")
+            import textgrad
+            print("✅ TextGrad dependencies available")
         except ImportError as e:
-            print(f"❌ Text2Grad dependencies missing: {e}")
-            print("Please run: ./setup.sh")
-            print("Or install manually: pip install torch transformers trl peft")
+            print(f"❌ TextGrad dependencies missing: {e}")
+            print("Please install TextGrad: pip install textgrad")
             sys.exit(1)
     
     # Validate environment
@@ -162,14 +166,14 @@ def main():
     if args.gemini:
         print(f"   Prompting: Gemini-enhanced {args.prompt_variant}")
         print(f"   Visual Analysis: Enabled (Gemini 2.5 Flash)")
-        if args.text2grad:
-            print(f"   Text2Grad: Enabled (gradient-based feedback processing)")
+        if args.textgrad:
+            print(f"   TextGrad: Enabled (gradient-based optimization)")
         else:
-            print(f"   Text2Grad: Disabled")
+            print(f"   TextGrad: Disabled")
     else:
         print(f"   Prompting: Standard {args.prompt_variant}")
         print(f"   Visual Analysis: Disabled")
-        print(f"   Text2Grad: Disabled (requires --gemini)")
+        print(f"   TextGrad: Disabled (requires --gemini)")
     print(f"   Model: {args.model_name}")
     print(f"   Max Steps: {args.max_steps}")
     print(f"   Episodes: {args.num_episodes}")
@@ -190,7 +194,7 @@ def main():
                 use_memory=not args.disable_memory,
                 use_function_calling=args.function_calling,
                 use_gemini=args.gemini,
-                use_text2grad=args.text2grad
+                use_textgrad=args.textgrad
             )
             
             if result.get("success"):
@@ -200,6 +204,31 @@ def main():
             
             print(f"   Steps taken: {result.get('steps_taken', 0)}")
             print(f"   Result file: {result.get('result_file', 'Not saved')}")
+            
+            # Calculate reward if requested
+            if args.calculate_reward and result.get('result_file'):
+                try:
+                    from evaluate_reward import calculate_episode_reward, print_reward_summary, update_episode_with_rewards
+                    import json
+                    
+                    print(f"🏆 Calculating reward for Episode {episode + 1}...")
+                    
+                    # Load episode data
+                    with open(result['result_file'], 'r') as f:
+                        episode_data = json.load(f)
+                    
+                    # Calculate reward
+                    reward_data = calculate_episode_reward(episode_data)
+                    
+                    # Update file with reward information
+                    update_episode_with_rewards(result['result_file'], reward_data)
+                    
+                    # Print reward summary
+                    print_reward_summary(reward_data)
+                    
+                except Exception as e:
+                    print(f"⚠️  Failed to calculate reward: {e}")
+            
             print()
     
     except KeyboardInterrupt:
